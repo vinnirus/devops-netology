@@ -1,4 +1,4 @@
-first_line
+one more first_line
 second_line
 will_be_moved
 last line
