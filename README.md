@@ -33,24 +33,24 @@ echo $HISTSIZE
 a{d,c,b}e = ade, ace, abe - перечисление возможных значений для механизма создания произвольных строк;
 
 п.10
-vagrant@vagrant:~$ touch file{1..300000}
--bash: /usr/bin/touch: Argument list too long
-vagrant@vagrant:~$ touch file{1..100000}
-vagrant@vagrant:~$ ls | wc -l
+vagrant@vagrant:~$ touch file{1..300000} \n
+-bash: /usr/bin/touch: Argument list too long \n
+vagrant@vagrant:~$ touch file{1..100000} \n
+vagrant@vagrant:~$ ls | wc -l \n
 100000
 
 п.11
 Конструкция [[ -d /tmp ]] возвращает 0 или 1, в зависимости от того, существует ли файл /tmp и является ли он директорией/
 
 п.12
-vagrant@vagrant:/usr/bin$ export PATH="/tmp/netology/:/usr/local/bin/:/bin/:$PATH"
-vagrant@vagrant:/usr/bin$ type -a bash
-bash is /tmp/netology/bash
-bash is /usr/local/bin/bash
-bash is /bin/bash
-bash is /usr/bin/bash
-bash is /bin/bash
-vagrant@vagrant:/usr/bin$
+vagrant@vagrant:/usr/bin$ export PATH="/tmp/netology/:/usr/local/bin/:/bin/:$PATH" \n
+vagrant@vagrant:/usr/bin$ type -a bash \n
+bash is /tmp/netology/bash \n
+bash is /usr/local/bin/bash \n
+bash is /bin/bash \n
+bash is /usr/bin/bash \n
+bash is /bin/bash \n
+vagrant@vagrant:/usr/bin$ \n
 
 п.13
 at - выполняет команды в указанное время
