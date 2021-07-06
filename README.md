@@ -1,56 +1,63 @@
 # devops-netology
 devops-10 student
 
-HW-3.1. Работа в терминале, лекция 1
+HW-3.2. Работа в терминале, лекция 2
 
-п.4:
-PS C:\projects\vagrant> vagrant status
-Current machine states:
+п.1:
+parallels@ubuntu-linux-20-04-desktop:~$ type cd
+cd is a shell builtin
 
-default                   running (virtualbox)
+Команда man cd говорит, что внешняя реализация cd допустима, но представляет собой сценарий с тем же именем, что и используемая в сценарии команда.
 
-The VM is running. To stop this VM, you can run `vagrant halt` to
-shut it down forcefully, or you can run `vagrant suspend` to simply
-suspend the virtual machine. In either case, to restart it again,
-simply run `vagrant up`.
+п.2
+grep -c <some_string> <some_file>
+
+п.3
+/sbin/init
+
+parallels@ubuntu-linux-20-04-desktop:~$ ps aux | grep " 1 "
+root           1  0.1  0.5 101876 10428 ?        Ss   23:01   0:01 /sbin/init
+
+п.4
+root@ubuntu-linux-20-04-desktop:~# ls /wrong_dir 2>/dev/pts/1
 
 п.5:
-Vagrant settings = VirtualBox default settings:
-RAM = 1024 Mb
-CPU = 2
-Video = 4 Mb
-HDD = 64 Gb
+less input.file
+first line
+second line
+3 line
 
-п.8:
-Длина журнала задается переменной HISTSIZE. Номер строки  1178.
-echo $HISTSIZE
-1000
+sort < input.file > output.file
 
-Директива ignoreboth объединяет директивы ignorespace и ignoredups. Т.е. в журнал не попадут команды, которые начинаются с пробела или повторяют предыдущую команду.
+less output.file
+3 line
+first line
+second line
+
+п.6
+-----------------------------------------------------------------------------------
+
+п.7:
+Командой bash 5>&1 мы определили еще один дескриптор с номером 5 (дескрипторы с 3 по 9 являются undefined и позволяют программе самой определять их поведение) затем перенаправили его поток в stdout.
+Далее мы записали строку netology в файловый дескриптор с номером 5, который выводит свой поток в stdout.
+
+п.8
+-------------------------------------------------------------------------------------
 
 п.9
-{ list; } - список команд, разделенных точкой с запятой;
-a{d,c,b}e = ade, ace, abe - перечисление возможных значений для механизма создания произвольных строк;
+Результатом выполнения команды станет вывод переменных окружения для текущего пользователя, что является эквивалентом вызову команды env.
 
 п.10
-vagrant@vagrant:~$ touch file{1..300000}
--bash: /usr/bin/touch: Argument list too long
-vagrant@vagrant:~$ touch file{1..100000}
-vagrant@vagrant:~$ ls | wc -l
-100000
+/proc/[pid]/cmdline - неизменяемый файл, который содержит полную командную строку для процесса при условии, что этот процесс не является зомби-процессом.ъ
+/proc/[pid]/exe - файл является символической ссылкой, указывающей на актуальный путь для выполняющейся команды.
 
 п.11
-Конструкция [[ -d /tmp ]] возвращает 0 или 1, в зависимости от того, существует ли файл /tmp и является ли он директорией/
+Выполняю работу на macbook m1, который не поддерживает sse инструкции, поэтому привожу пример для RHEL6.4 для x86:
+cat /proc/cpuinfo | grep sse
+flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts mmx fxsr sse sse2 ss ht syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts xtopology tsc_reliable nonstop_tsc aperfmperf unfair_spinlock pni pclmulqdq ssse3 cx16 sse4_1 sse4_2 popcnt aes xsave avx hypervisor lahf_lm ida arat epb pln pts dts
 
-п.12
-vagrant@vagrant:/usr/bin$ export PATH="/tmp/netology/:/usr/local/bin/:/bin/:$PATH"
-vagrant@vagrant:/usr/bin$ type -a bash
-bash is /tmp/netology/bash
-bash is /usr/local/bin/bash
-bash is /bin/bash
-bash is /usr/bin/bash
-bash is /bin/bash
+Старшая версия sse = sse4_2
 
-п.13
-at - выполняет команды в указанное время
-batch - выполняет команды когда средняя загрузка падает ниже заданного значения.
+
+
+п.10
