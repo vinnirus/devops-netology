@@ -52,7 +52,7 @@ second line
 /proc/[pid]/exe - файл является символической ссылкой, указывающей на актуальный путь для выполняющейся команды.
 
 п.11
-Выполняю работу на macbook m1, который не поддерживает sse инструкции, поэтому привожу пример для RHEL6.4 для x86:
+Выполняю работу на macbook m1, который не поддерживает sse инструкции, поэтому привожу пример для RHEL6.4 для x86_64:
 cat /proc/cpuinfo | grep sse
 flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts mmx fxsr sse sse2 ss ht syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts xtopology tsc_reliable nonstop_tsc aperfmperf unfair_spinlock pni pclmulqdq ssse3 cx16 sse4_1 sse4_2 popcnt aes xsave avx hypervisor lahf_lm ida arat epb pln pts dts
 
@@ -63,4 +63,18 @@ flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov 
 ssh vagrant@127.0.0.1
 
 п.13
-
+1. vagrant@vagrant:~$ tail -f bash.man.txt
+2. vagrant@vagrant:~$ screen -S 'session for reptyr'
+3. vagrant@vagrant:~$ ps aux | grep tail
+vagrant     1491  0.0  0.0   8112   596 pts/3    S+   15:12   0:00 tail -f bash.man.txt
+vagrant     1496  0.0  0.0   8900   672 pts/4    S+   15:13   0:00 grep --color=auto tail
+4. vagrant@vagrant:~$ reptyr -s 1491
+5. ctrl+A, D - для выхода из screen
+6. vagrant@vagrant:~$ ps aux | grep tail
+vagrant     1491  0.0  0.1   8112  1912 pts/2    Ss+  15:12   0:00 tail -f bash.man.txt
+vagrant     1525  0.0  0.0      0     0 pts/3    Z    15:21   0:00 [tail] <defunct>
+vagrant     1534  0.0  0.0   8900   664 pts/0    S+   15:23   0:00 grep --color=auto tail
+7. vagrant@vagrant:~$ kill 1525
+  
+п.14
+Программа tee копирует данные из stdin в stdout. 
