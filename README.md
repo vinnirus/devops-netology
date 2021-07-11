@@ -13,13 +13,14 @@ cd является командой, встроенной в оболочку.
 grep -c <some_string> <some_file>
 
 п.3
-/sbin/init
+systemd
 
-parallels@ubuntu-linux-20-04-desktop:~$ ps aux | grep " 1 "
-root           1  0.1  0.5 101876 10428 ?        Ss   23:01   0:01 /sbin/init
+parallels@ubuntu-linux-20-04-desktop:~$ pstree -p
+systemd(1)─┬─ModemManager(40662)─┬─{ModemManager}(40665)
+           │                     └─{ModemManager}(40669)
+           ├─NetworkManager(223482)─┬─{NetworkManager}(223517)
+           │                        └─{NetworkManager}(223518)
 
-*Мсппользовалась виртуальная машина parallels под управлением операционной системы linux ubuntu 20.04 desktop для arm процессоров.
-Init представляет подсистему инициализации в Unix и ряде Unix-подобных систем, которая запускает все остальные процессы.
 
 п.4
 root@ubuntu-linux-20-04-desktop:~# ls /wrong_dir 2>/dev/pts/1
