@@ -1,92 +1,79 @@
 # devops-netology
 devops-10 student
 
-HW-3.2. Работа в терминале, лекция 2
+HW-2.4. Инструменты Git
 
 п.1:
-parallels@ubuntu-linux-20-04-desktop:~$ type cd
-cd is a shell builtin
-cd является командой, встроенной в оболочку.
-Команда man cd говорит, что внешняя реализация cd допустима, но представляет собой сценарий с тем же именем, что и используемая в сценарии команда.
+git show 'aefea'
+
+commit aefead2207ef7e2aa5dc81a34aedf0cad4c32545
+Author: Alisdair McDiarmid <alisdair@users.noreply.github.com>
+Date:   Thu Jun 18 10:29:58 2020 -0400
+
+    Update CHANGELOG.md
 
 п.2
-grep -c <some_string> <some_file>
+git show 8502                                                                                                                   
+error: short SHA1 8502 is ambiguous
+hint: The candidates are:
+hint:   85024d310 commit 2020-03-05 - v0.12.23
+hint:   8502f202c blob
+
+git show 85024d3
+commit 85024d3100126de36331c6982bfaac02cdab9e76 (tag: v0.12.23)
 
 п.3
-systemd
+git log --all --graph b8d720
+И в результатах ищем требуемый коммит
 
-parallels@ubuntu-linux-20-04-desktop:~$ pstree -p
-systemd(1)─┬─ModemManager(40662)─┬─{ModemManager}(40665)
-           │                     └─{ModemManager}(40669)
-           ├─NetworkManager(223482)─┬─{NetworkManager}(223517)
-           │                        └─{NetworkManager}(223518)
-
+У merge-коммита b8d720f83 2 родителя:
+9ea88f22f
+56cd7859e
 
 п.4
-root@ubuntu-linux-20-04-desktop:~# ls /wrong_dir 2>/dev/pts/1
+git log --pretty=oneline  v0.12.23...v0.12.24
+
+b14b74c4939dcab573326f4e3ee2a62e23e12f89 [Website] vmc provider links
+3f235065b9347a758efadc92295b540ee0a5e26e Update CHANGELOG.md
+6ae64e247b332925b872447e9ce869657281c2bf registry: Fix panic when server is unreachable
+5c619ca1baf2e21a155fcdb4c264cc9e24a2a353 website: Remove links to the getting started guide's old location
+06275647e2b53d97d4f0a19a0fec11f6d69820b5 Update CHANGELOG.md
+d5f9411f5108260320064349b757f55c09bc4b80 command: Fix bug when using terraform login on Windows
+4b6d06cc5dcb78af637bbb19c198faff37a066ed Update CHANGELOG.md
+dd01a35078f040ca984cdd349f18d0b67e486c35 Update CHANGELOG.md
+225466bc3e5f35baa5d07197bbc079345b77525e Cleanup after v0.12.23 release
 
 п.5:
-less input.file
-first line
-second line
-3 line
+git log --all -S 'func providerSource('
 
-sort < input.file > output.file
-
-less output.file
-3 line
-first line
-second line
+8c928e83589d90a031f811fae52a81be7153e82f
 
 п.6
-Перенаправить данные из pty в tty возможно, но наблюдать вывод не получится.
-*Т.к. перенаправление происходит на другое устройство вывода, для того, чтобы наблюдать вывод в реальном времени, необходимо переключиться на это устройство.
+git log --all -S 'globalPluginDirs'
 
-п.7:
-Командой bash 5>&1 мы определили еще один дескриптор с номером 5 (дескрипторы с 3 по 9 являются undefined и позволяют программе самой определять их поведение) затем перенаправили его поток в stdout.
-Далее мы записали строку netology в файловый дескриптор с номером 5, который выводит свой поток в stdout.
+commit 35a058fb3ddfae9cfee0b3893822c9a95b920f4c
+Author: Martin Atkins <mart@degeneration.co.uk>
+Date:   Thu Oct 19 17:40:20 2017 -0700
 
-п.8
-vagrant@vagrant:~$ ls /proc/$$/fd
-0  1  2  255
-vagrant@vagrant:~$ bash 5>&1
-vagrant@vagrant:~$ bash 2>&1
-vagrant@vagrant:~$ bash 2>&5
-vagrant@vagrant:~$ ls /proc/$$/fd
-0  1  2  255  5
-vagrant@vagrant:~$ ls wrong_dir | less
+    main: configure credentials from the CLI config file
 
-п.9
-Результатом выполнения команды станет вывод переменных окружения для текущего пользователя, что является эквивалентом вызову команды env.
+commit c0b17610965450a89598da491ce9b6b5cbd6393f
+Author: James Bardin <j.bardin@gmail.com>
+Date:   Mon Jun 12 15:04:40 2017 -0400
 
-п.10
-/proc/[pid]/cmdline - неизменяемый файл, который содержит полную командную строку для процесса при условии, что этот процесс не является зомби-процессом.ъ
-/proc/[pid]/exe - файл является символической ссылкой, указывающей на актуальный путь для выполняющейся команды.
+    prevent log output during init
 
-п.11
-Выполняю работу на macbook m1, который не поддерживает sse инструкции, поэтому привожу пример для RHEL6.4 для x86_64:
-cat /proc/cpuinfo | grep sse
-flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts mmx fxsr sse sse2 ss ht syscall nx rdtscp lm constant_tsc arch_perfmon pebs bts xtopology tsc_reliable nonstop_tsc aperfmperf unfair_spinlock pni pclmulqdq ssse3 cx16 sse4_1 sse4_2 popcnt aes xsave avx hypervisor lahf_lm ida arat epb pln pts dts
+    The extra output shouldn't be seen by the user, and is causing TFE to
+    fail.
 
-Старшая версия sse = sse4_2
+commit 8364383c359a6b738a436d1b7745ccdce178df47
+Author: Martin Atkins <mart@degeneration.co.uk>
+Date:   Thu Apr 13 18:05:58 2017 -0700
 
-п.12
-По умолчанию, когда я запускаю команду на удаленной машине, используя ssh, процесс TTY не инициируется для удаленной сессии. Это позволяет передавать двоичные данные без необходимости использовать териминал. Для того, чтобы изменить это поведение необходимо просто подключиться к удаленной сессии по протоколу ssh и авторизоваться в системе:
-ssh vagrant@127.0.0.1
+п.7
+git log --all -S 'synchronizedWriters'
 
-п.13
-1. vagrant@vagrant:~$ tail -f bash.man.txt
-2. vagrant@vagrant:~$ screen -S 'session for reptyr'
-3. vagrant@vagrant:~$ ps aux | grep tail
-vagrant     1491  0.0  0.0   8112   596 pts/3    S+   15:12   0:00 tail -f bash.man.txt
-vagrant     1496  0.0  0.0   8900   672 pts/4    S+   15:13   0:00 grep --color=auto tail
-4. vagrant@vagrant:~$ reptyr -s 1491
-5. ctrl+A, D - для выхода из screen
-6. vagrant@vagrant:~$ ps aux | grep tail
-vagrant     1491  0.0  0.1   8112  1912 pts/2    Ss+  15:12   0:00 tail -f bash.man.txt
-vagrant     1525  0.0  0.0      0     0 pts/3    Z    15:21   0:00 [tail] <defunct>
-vagrant     1534  0.0  0.0   8900   664 pts/0    S+   15:23   0:00 grep --color=auto tail
-7. vagrant@vagrant:~$ kill 1525
-  
-п.14
-Программа tee копирует данные из stdin в stdout. В случае с командой sudo echo string > /root/new_file перенаправление происходит под текущим пользователем, а в случае c командой echo string | sudo tee /root/new_file сразу происходит запуск программы tee с правами суперпользователя и которой на вход передается вывод echo string.
+git show 5ac311e2a91e381e2f52234668b49ba670aa0fe5
+
+commit 5ac311e2a91e381e2f52234668b49ba670aa0fe5
+Author: Martin Atkins <mart@degeneration.co.uk>
