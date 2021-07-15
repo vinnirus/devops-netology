@@ -1,79 +1,92 @@
 # devops-netology
 devops-10 student
 
-HW-2.4. Инструменты Git
+HW-3.3. Операционные системы, лекция 1
 
-п.1:
-git show 'aefea'
+п.1
+strace -o /home/vagrant/strace.out /bin/bash -c 'cd /tmp'
+less /home/vagrant/strace.out
 
-commit aefead2207ef7e2aa5dc81a34aedf0cad4c32545
-Author: Alisdair McDiarmid <alisdair@users.noreply.github.com>
-Date:   Thu Jun 18 10:29:58 2020 -0400
-
-    Update CHANGELOG.md
+chdir("/tmp")                           = 0
 
 п.2
-git show 8502                                                                                                                   
-error: short SHA1 8502 is ambiguous
-hint: The candidates are:
-hint:   85024d310 commit 2020-03-05 - v0.12.23
-hint:   8502f202c blob
-
-git show 85024d3
-commit 85024d3100126de36331c6982bfaac02cdab9e76 (tag: v0.12.23)
+/usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache
 
 п.3
-git log --all --graph b8d720
-И в результатах ищем требуемый коммит
+vagrant@vagrant:~/big_file$ rm file.bigsize
 
-У merge-коммита b8d720f83 2 родителя:
-9ea88f22f
-56cd7859e
+vagrant@vagrant:~/big_file$ ps aux | grep less
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+vagrant     4183  0.0  0.2   8436  2628 pts/3    T    14:42   0:00 less +F big_file/file.bigsize
+vagrant     4196  0.0  0.0   8900   676 pts/0    S+   14:43   0:00 grep --color=auto less
+
+vagrant@vagrant:~/big_file$ lsof | grep deleted
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+less      4183                       vagrant    3r      REG              253,0 2
+147483648     131092 /home/vagrant/big_file/file.bigsize (deleted)
+
+vagrant@vagrant:~/big_file$ ls -l /proc/4183/fd | grep bigsize
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+lr-x------ 1 vagrant vagrant 64 Jul 15 14:43 3 -> /home/vagrant/big_file/file.bigsize (deleted)
+
+vagrant@vagrant:~/big_file$ df -h
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Filesystem                  Size  Used Avail Use% Mounted on
+udev                        447M     0  447M   0% /dev
+tmpfs                        99M  664K   98M   1% /run
+/dev/mapper/vgvagrant-root   62G  3.6G   55G   7% /
+tmpfs                       491M     0  491M   0% /dev/shm
+tmpfs                       5.0M     0  5.0M   0% /run/lock
+tmpfs                       491M     0  491M   0% /sys/fs/cgroup
+/dev/sda1                   511M  4.0K  511M   1% /boot/efi
+tmpfs                        99M     0   99M   0% /run/user/1000
+
+vagrant@vagrant:~/big_file$ truncate -s 0 /proc/4183/fd/3
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+vagrant@vagrant:~/big_file$ df -h
+Filesystem                  Size  Used Avail Use% Mounted on
+udev                        447M     0  447M   0% /dev
+tmpfs                        99M  664K   98M   1% /run
+/dev/mapper/vgvagrant-root   62G  1.6G   57G   3% /
+tmpfs                       491M     0  491M   0% /dev/shm
+tmpfs                       5.0M     0  5.0M   0% /run/lock
+tmpfs                       491M     0  491M   0% /sys/fs/cgroup
+/dev/sda1                   511M  4.0K  511M   1% /boot/efi
+tmpfs                        99M     0   99M   0% /run/user/1000
 
 п.4
-git log --pretty=oneline  v0.12.23...v0.12.24
+Зомби процес не занимает память, но блокируют записи в таблице процессов, размер которой ограничен для каждого пользователя и системы в целом.
 
-b14b74c4939dcab573326f4e3ee2a62e23e12f89 [Website] vmc provider links
-3f235065b9347a758efadc92295b540ee0a5e26e Update CHANGELOG.md
-6ae64e247b332925b872447e9ce869657281c2bf registry: Fix panic when server is unreachable
-5c619ca1baf2e21a155fcdb4c264cc9e24a2a353 website: Remove links to the getting started guide's old location
-06275647e2b53d97d4f0a19a0fec11f6d69820b5 Update CHANGELOG.md
-d5f9411f5108260320064349b757f55c09bc4b80 command: Fix bug when using terraform login on Windows
-4b6d06cc5dcb78af637bbb19c198faff37a066ed Update CHANGELOG.md
-dd01a35078f040ca984cdd349f18d0b67e486c35 Update CHANGELOG.md
-225466bc3e5f35baa5d07197bbc079345b77525e Cleanup after v0.12.23 release
-
-п.5:
-git log --all -S 'func providerSource('
-
-8c928e83589d90a031f811fae52a81be7153e82f
+п.5
 
 п.6
-git log --all -S 'globalPluginDirs'
+uname({sysname="Linux", nodename="vagrant", ...}) = 0
 
-commit 35a058fb3ddfae9cfee0b3893822c9a95b920f4c
-Author: Martin Atkins <mart@degeneration.co.uk>
-Date:   Thu Oct 19 17:40:20 2017 -0700
-
-    main: configure credentials from the CLI config file
-
-commit c0b17610965450a89598da491ce9b6b5cbd6393f
-Author: James Bardin <j.bardin@gmail.com>
-Date:   Mon Jun 12 15:04:40 2017 -0400
-
-    prevent log output during init
-
-    The extra output shouldn't be seen by the user, and is causing TFE to
-    fail.
-
-commit 8364383c359a6b738a436d1b7745ccdce178df47
-Author: Martin Atkins <mart@degeneration.co.uk>
-Date:   Thu Apr 13 18:05:58 2017 -0700
 
 п.7
-git log --all -S 'synchronizedWriters'
+Если первая команда завершилась с ошибкой, то при испльзовании ';' будет запущена вторая команда.
+Если первая команда завершилась с ошибкой, то при испльзовании '&&' вторая команда не будет запущена.
 
-git show 5ac311e2a91e381e2f52234668b49ba670aa0fe5
+Установка значения -e устанавливает поведение выполнения нескольких последовательных команд как немедленный выход если команда завершилась с ненулевым статусом. В этом случае использование ';' и '&&' приведет к одинаковому поведению.
 
-commit 5ac311e2a91e381e2f52234668b49ba670aa0fe5
-Author: Martin Atkins <mart@degeneration.co.uk>
+п.8
+-e = немедленный выход если команда завершилась с ненулевым кодом
+-u = если передается переменная с неустановленным значением, выдается ошибка
+-x = выводит команды и их аргументы во время их выполнения
+-o pipefail = конвейер возвращает статус, отличный от нулевого для последней команды с таким статусом, либо ноль, если все команды выполнились с нулевым статусом.
+
+Эти аргументы полезны при испльзовании в сценариях, т.к. набор обеспечивает визуализацию стадии выполнения скрипта (-х), прерывает дальнейшее выполнение, если предыдущая команда завершилась с ошибкой (-e), выполняет проверку на наличие значения в переменных.
+
+п.9
+vagrant@vagrant:~$ ps -ax -o stat | grep -c 'S'
+66
+vagrant@vagrant:~$ ps -ax -o stat | grep -c 'I'
+47
+vagrant@vagrant:~$ ps -ax -o stat | grep -c 'R'
+1
+vagrant@vagrant:~$ ps -ax -o stat | grep -c 'Z'
+1
+vagrant@vagrant:~$ ps -ax -o stat | grep -c 'T'
+2
+
+Т.о. наибольшее количество процессов находится в статусе S* (interruptible sleep), т.е. в ожидании завершения
