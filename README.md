@@ -10,7 +10,7 @@ less /home/vagrant/strace.out
 chdir("/tmp")                           = 0
 
 п.2
-/usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache
+/usr/share/misc/magic.mgc
 
 п.3
 vagrant@vagrant:~/big_file$ rm file.bigsize
@@ -58,10 +58,31 @@ tmpfs                        99M     0   99M   0% /run/user/1000
 Зомби процес не занимает память, но блокируют записи в таблице процессов, размер которой ограничен для каждого пользователя и системы в целом.
 
 п.5
-systemd-udevd
+sudo strace -r -o ./strace.out /usr/sbin/opensnoop-bpfcc -d 1
+less strace.out | grep "openat" | grep " = 3"  > strace.open.out
+head -n 10 strace.open.out
+
+     0.000254 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+     0.000106 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+     0.000104 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libpthread.so.0", O_RDONLY|O_CLOEXEC) = 3
+     0.000149 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libdl.so.2", O_RDONLY|O_CLOEXEC) = 3
+     0.000131 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libutil.so.1", O_RDONLY|O_CLOEXEC) = 3
+     0.000136 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libm.so.6", O_RDONLY|O_CLOEXEC) = 3
+     0.000142 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libexpat.so.1", O_RDONLY|O_CLOEXEC) = 3
+     0.000037 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libz.so.1", O_RDONLY|O_CLOEXEC) = 3
+     0.000056 openat(AT_FDCWD, "/usr/lib/locale/locale-archive", O_RDONLY|O_CLOEXEC) = 3
+     0.000096 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/gconv/gconv-modules.cache", O_RDONLY) = 3
+
+less strace.open.out | wc -l
+953
 
 п.6
 uname({sysname="Linux", nodename="vagrant", ...}) = 0
+
+также информацию можно посмотреть в соответствующем файле /proc/sys/kernel/{ostype, hostname, osrelease, version, domainname}
+например,
+cat /proc/sys/kernel/osrelease
+5.4.0-66-genericn
 
 
 п.7
