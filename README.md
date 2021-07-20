@@ -58,23 +58,39 @@ tmpfs                        99M     0   99M   0% /run/user/1000
 Зомби процес не занимает память, но блокируют записи в таблице процессов, размер которой ограничен для каждого пользователя и системы в целом.
 
 п.5
-sudo strace -r -o ./strace.out /usr/sbin/opensnoop-bpfcc -d 1
-less strace.out | grep "openat" | grep " = 3"  > strace.open.out
-head -n 10 strace.open.out
+Я выполнял задание на macbook m1 с поднятой в parallels виртуалкой под ubuntu 20.04 и вывод команды opensnoop-bpfcc был следующий:
+sudo /usr/sbin/opensnoop-bpfcc -e
 
-     0.000254 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
-     0.000106 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
-     0.000104 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libpthread.so.0", O_RDONLY|O_CLOEXEC) = 3
-     0.000149 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libdl.so.2", O_RDONLY|O_CLOEXEC) = 3
-     0.000131 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libutil.so.1", O_RDONLY|O_CLOEXEC) = 3
-     0.000136 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libm.so.6", O_RDONLY|O_CLOEXEC) = 3
-     0.000142 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libexpat.so.1", O_RDONLY|O_CLOEXEC) = 3
-     0.000037 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libz.so.1", O_RDONLY|O_CLOEXEC) = 3
-     0.000056 openat(AT_FDCWD, "/usr/lib/locale/locale-archive", O_RDONLY|O_CLOEXEC) = 3
-     0.000096 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/gconv/gconv-modules.cache", O_RDONLY) = 3
+PID    COMM               FD ERR FLAGS    PATH
+1178   apps.plugin         4   0 00500000 
+1178   apps.plugin         5   0 00500000 
+1178   apps.plugin         6   0 00500000 
+1178   apps.plugin         7   0 02444000 
+1178   apps.plugin         4   0 00500000 
+1178   apps.plugin         5   0 00500000 
+1178   apps.plugin         6   0 00500000 
+1178   apps.plugin         7   0 02444000 
 
-less strace.open.out | wc -l
-953
+Поэтому возникли сложности с этим пунктом.
+
+Выполнил эту команду на рабочей ВМ и получил следующий результат:
+
+sudo /usr/sbin/opensnoop-bpfcc -e
+
+PID COMM     FD ERR FLAGS   PATH 
+607 irqbalance 6 0 00100000 /proc/interrupts 
+607 irqbalance 6 0 00100000 /proc/stat 
+607 irqbalance 6 0 00100000 /proc/irq/20/smp_affinity 
+607 irqbalance 6 0 00100000 /proc/irq/0/smp_affinity 
+607 irqbalance 6 0 00100000 /proc/irq/1/smp_affinity 
+607 irqbalance 6 0 00100000 /proc/irq/8/smp_affinity 
+607 irqbalance 6 0 00100000 /proc/irq/12/smp_affinity 
+607 irqbalance 6 0 00100000 /proc/irq/14/smp_affinity 
+607 irqbalance 6 0 00100000 /proc/irq/15/smp_affinity 
+18967 systemd-timesyn 14 0 02100000 /etc/resolv.conf 
+18967 sd-resolve 14 0 02100000 /etc/hosts 
+1 systemd 12 0 02100000 /proc/18967/cgroup 
+1 systemd 12 0 02100000 /proc/18967/cgroup
 
 п.6
 uname({sysname="Linux", nodename="vagrant", ...}) = 0
