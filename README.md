@@ -1,130 +1,64 @@
 # devops-netology
 devops-10 student
 
-HW-3.3. Операционные системы, лекция 1
+HW-3.4. Операционные системы, лекция 2
 
 п.1
-strace -o /home/vagrant/strace.out /bin/bash -c 'cd /tmp'
-less /home/vagrant/strace.out
+Использовал parallels c ВМ ubuntu 20.04 для arm64
+В репозитории не оказалось пакета node_exporter дяя требуемой архитектуры, поэтому:
 
-chdir("/tmp")                           = 0
+Установил компилятор golang
+sudo snap install go --classic
 
-п.2
-/usr/share/misc/magic.mgc
+Далее я клонировал исходники
+git clone https://github.com/prometheus/node_exporter.git
+cd node_exporter/
+go build
 
-п.3
-vagrant@vagrant:~/big_file$ rm file.bigsize
+cd /etc/systemd/system/
+touch node_exporter.service
+vim node_exporter.service
+##############################
+[Unit]
+Description=Node Exporter
+ 
+[Service]
+ExecStart=/opt/node_exporter/node_exporter
+ 
+[Install]
+WantedBy=default.target
+##############################
 
-vagrant@vagrant:~/big_file$ ps aux | grep less
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-vagrant     4183  0.0  0.2   8436  2628 pts/3    T    14:42   0:00 less +F big_file/file.bigsize
-vagrant     4196  0.0  0.0   8900   676 pts/0    S+   14:43   0:00 grep --color=auto less
+Затем перечитал настройки для systemctl
+systemctl daemon-reload
 
-vagrant@vagrant:~/big_file$ lsof | grep deleted
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-less      4183                       vagrant    3r      REG              253,0 2
-147483648     131092 /home/vagrant/big_file/file.bigsize (deleted)
+Активировал службу
+systemctl enable node_exporter.service
 
-vagrant@vagrant:~/big_file$ ls -l /proc/4183/fd | grep bigsize
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-lr-x------ 1 vagrant vagrant 64 Jul 15 14:43 3 -> /home/vagrant/big_file/file.bigsize (deleted)
+И запустил службу
+systemctl start node_exporter.service
 
-vagrant@vagrant:~/big_file$ df -h
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-Filesystem                  Size  Used Avail Use% Mounted on
-udev                        447M     0  447M   0% /dev
-tmpfs                        99M  664K   98M   1% /run
-/dev/mapper/vgvagrant-root   62G  3.6G   55G   7% /
-tmpfs                       491M     0  491M   0% /dev/shm
-tmpfs                       5.0M     0  5.0M   0% /run/lock
-tmpfs                       491M     0  491M   0% /sys/fs/cgroup
-/dev/sda1                   511M  4.0K  511M   1% /boot/efi
-tmpfs                        99M     0   99M   0% /run/user/1000
+Ниже приведен вывод команды systemctl status node_exporter.service после перезапуска ВМ:
 
-vagrant@vagrant:~/big_file$ truncate -s 0 /proc/4183/fd/3
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-vagrant@vagrant:~/big_file$ df -h
-Filesystem                  Size  Used Avail Use% Mounted on
-udev                        447M     0  447M   0% /dev
-tmpfs                        99M  664K   98M   1% /run
-/dev/mapper/vgvagrant-root   62G  1.6G   57G   3% /
-tmpfs                       491M     0  491M   0% /dev/shm
-tmpfs                       5.0M     0  5.0M   0% /run/lock
-tmpfs                       491M     0  491M   0% /sys/fs/cgroup
-/dev/sda1                   511M  4.0K  511M   1% /boot/efi
-tmpfs                        99M     0   99M   0% /run/user/1000
+parallels@ubuntu-linux-20-04-desktop:/etc/systemd/system$ systemctl status node_exporter.service 
+● node_exporter.service - Node Exporter
+     Loaded: loaded (/etc/systemd/system/node_exporter.service; enabled; vendor preset: enabled)
+     Active: active (running) since Wed 2021-07-21 23:17:06 MSK; 30min ago
+   Main PID: 553 (node_exporter)
+      Tasks: 5 (limit: 2268)
+     Memory: 17.1M
+     CGroup: /system.slice/node_exporter.service
+             └─553 /opt/node_exporter/node_exporter
 
-п.4
-Зомби процес не занимает память, но блокируют записи в таблице процессов, размер которой ограничен для каждого пользователя и системы в целом.
+Jul 21 23:17:06 ubuntu-linux-20-04-desktop node_exporter[553]: level=info ts=2021-07-21T20:17:06.180Z caller=node_exporter.go:115 collector=time
+Jul 21 23:17:06 ubuntu-linux-20-04-desktop node_exporter[553]: level=info ts=2021-07-21T20:17:06.180Z caller=node_exporter.go:115 collector=timex
+Jul 21 23:17:06 ubuntu-linux-20-04-desktop node_exporter[553]: level=info ts=2021-07-21T20:17:06.180Z caller=node_exporter.go:115 collector=udp_queues
+Jul 21 23:17:06 ubuntu-linux-20-04-desktop node_exporter[553]: level=info ts=2021-07-21T20:17:06.180Z caller=node_exporter.go:115 collector=uname
+Jul 21 23:17:06 ubuntu-linux-20-04-desktop node_exporter[553]: level=info ts=2021-07-21T20:17:06.180Z caller=node_exporter.go:115 collector=vmstat
+Jul 21 23:17:06 ubuntu-linux-20-04-desktop node_exporter[553]: level=info ts=2021-07-21T20:17:06.180Z caller=node_exporter.go:115 collector=xfs
+Jul 21 23:17:06 ubuntu-linux-20-04-desktop node_exporter[553]: level=info ts=2021-07-21T20:17:06.180Z caller=node_exporter.go:115 collector=zfs
+Jul 21 23:17:06 ubuntu-linux-20-04-desktop node_exporter[553]: level=info ts=2021-07-21T20:17:06.184Z caller=node_exporter.go:199 msg="Listening on" address=:9100
+Jul 21 23:17:06 ubuntu-linux-20-04-desktop node_exporter[553]: level=info ts=2021-07-21T20:17:06.186Z caller=tls_config.go:191 msg="TLS is disabled." http2=false
+Jul 21 23:18:14 ubuntu-linux-20-04-desktop node_exporter[553]: level=error ts=2021-07-21T20:18:14.031Z caller=collector.go:169 msg="collector failed" name=nvme duration_seconds=1.>
+lines 1-19/19 (END)
 
-п.5
-Я выполнял задание на macbook m1 с поднятой в parallels виртуалкой под ubuntu 20.04 и вывод команды opensnoop-bpfcc был следующий:
-sudo /usr/sbin/opensnoop-bpfcc -e
-
-PID    COMM               FD ERR FLAGS    PATH
-1178   apps.plugin         4   0 00500000 
-1178   apps.plugin         5   0 00500000 
-1178   apps.plugin         6   0 00500000 
-1178   apps.plugin         7   0 02444000 
-1178   apps.plugin         4   0 00500000 
-1178   apps.plugin         5   0 00500000 
-1178   apps.plugin         6   0 00500000 
-1178   apps.plugin         7   0 02444000 
-
-Поэтому возникли сложности с этим пунктом.
-
-Выполнил эту команду на рабочей ВМ и получил следующий результат:
-
-sudo /usr/sbin/opensnoop-bpfcc -e
-
-PID COMM     FD ERR FLAGS   PATH 
-607 irqbalance 6 0 00100000 /proc/interrupts 
-607 irqbalance 6 0 00100000 /proc/stat 
-607 irqbalance 6 0 00100000 /proc/irq/20/smp_affinity 
-607 irqbalance 6 0 00100000 /proc/irq/0/smp_affinity 
-607 irqbalance 6 0 00100000 /proc/irq/1/smp_affinity 
-607 irqbalance 6 0 00100000 /proc/irq/8/smp_affinity 
-607 irqbalance 6 0 00100000 /proc/irq/12/smp_affinity 
-607 irqbalance 6 0 00100000 /proc/irq/14/smp_affinity 
-607 irqbalance 6 0 00100000 /proc/irq/15/smp_affinity 
-18967 systemd-timesyn 14 0 02100000 /etc/resolv.conf 
-18967 sd-resolve 14 0 02100000 /etc/hosts 
-1 systemd 12 0 02100000 /proc/18967/cgroup 
-1 systemd 12 0 02100000 /proc/18967/cgroup
-
-п.6
-uname({sysname="Linux", nodename="vagrant", ...}) = 0
-
-также информацию можно посмотреть в соответствующем файле /proc/sys/kernel/{ostype, hostname, osrelease, version, domainname}
-например,
-cat /proc/sys/kernel/osrelease
-5.4.0-66-genericn
-
-
-п.7
-Если первая команда завершилась с ошибкой, то при испльзовании ';' будет запущена вторая команда.
-Если первая команда завершилась с ошибкой, то при испльзовании '&&' вторая команда не будет запущена.
-
-Установка значения -e устанавливает поведение выполнения нескольких последовательных команд как немедленный выход если команда завершилась с ненулевым статусом. В этом случае использование ';' и '&&' приведет к одинаковому поведению.
-
-п.8
--e = немедленный выход если команда завершилась с ненулевым кодом
--u = если передается переменная с неустановленным значением, выдается ошибка
--x = выводит команды и их аргументы во время их выполнения
--o pipefail = конвейер возвращает статус, отличный от нулевого для последней команды с таким статусом, либо ноль, если все команды выполнились с нулевым статусом.
-
-Эти аргументы полезны при испльзовании в сценариях, т.к. набор обеспечивает визуализацию стадии выполнения скрипта (-х), прерывает дальнейшее выполнение, если предыдущая команда завершилась с ошибкой (-e), выполняет проверку на наличие значения в переменных.
-
-п.9
-vagrant@vagrant:~$ ps -ax -o stat | grep -c 'S'
-66
-vagrant@vagrant:~$ ps -ax -o stat | grep -c 'I'
-47
-vagrant@vagrant:~$ ps -ax -o stat | grep -c 'R'
-1
-vagrant@vagrant:~$ ps -ax -o stat | grep -c 'Z'
-1
-vagrant@vagrant:~$ ps -ax -o stat | grep -c 'T'
-2
-
-Т.о. наибольшее количество процессов находится в статусе S* (interruptible sleep), т.е. в ожидании завершения
