@@ -3,8 +3,11 @@ devops-10 student
 
 HW-3.4. Операционные системы, лекция 2
 
+**************
+Использовал виртуализацию parallels c ВМ ubuntu 20.04 для arm64
+**************
+
 п.1
-Использовал parallels c ВМ ubuntu 20.04 для arm64
 В репозитории не оказалось пакета node_exporter дяя требуемой архитектуры, поэтому:
 
 Установил компилятор golang
@@ -115,3 +118,44 @@ node_network_receive_errs_total
 node_network_up
 
 п.3
+netdata предоставляет средства визуализиции мониторинга в части утилизации основных ресурсов сервера:
+System Overview - Swap - Disk read - Disk write - CPU - Net Inbound - Net Outbound - Used RAM - interrupts - softirqs - softnet - entropy - uptime - ipc semaphores  т.д.
+
+Затем на странице располагаются более детализированные графики: утилизация каждого из ядер процессора, график памяти kernel, ожидающей записи на диск, память, используемая kernel, утилизация каждого из существующих разделов диска, детальные графики утилизации сети.
+
+п.4
+Да, после инициализации аппаратных ресурсов в логах dmesg можно увидеть записи вида:
+[    2.645102] systemd[1]: Detected virtualization parallels.
+[    2.645105] systemd[1]: Detected architecture arm64.
+
+п.5
+
+
+п.6
+
+
+п.7
+Данный синтаксис сначала определяет функцию, которая дважды рекурсивно вызывает сама себя и в фоне, а затем запускает эту функцию. 
+Ситуацию помогла стабилизировать служба user.slice:
+[17556.910508] cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/user@1000.service
+[17572.001748] hrtimer: interrupt took 688585 ns
+
+За максимальное количество задач отвечают несколько параметров:
+Глобальные настройки задаются в файле /etc/systemd/system.conf
+Параметр: 
+[Manager]
+DefaultTasksMax=15288
+
+Настройки для всех пользователей задаются в файле /etc/systemd/logind.conf file:
+Параметр
+[Login]
+UserTasksMax = 12288
+
+Для текущего пользователя с UID = number параметры указываются в файле /etc/systemd/system/user-<number>.slice.d/50-tasksmax.conf
+Параметр
+[Slice]
+TasksMax=18000
+
+Все вышеописанные настройки вступят в силу после перезагрузки системы или сессии пользователя
+Кроме этого, значение можно изменить на лету, зная UID пользователя:
+systemctl set-property user-<UID>.slice TasksMax=<Значение>
