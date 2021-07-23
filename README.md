@@ -129,13 +129,31 @@ System Overview - Swap - Disk read - Disk write - CPU - Net Inbound - Net Outbou
 [    2.645105] systemd[1]: Detected architecture arm64.
 
 п.5
+sysctl fs.nr_open
+fs.nr_open = 1048576
+Данный параметр определяет максимально возможное значение открытых файловых дескрипторов. По умолчанию для системы уставливается равным 1024*102, что равно 1048576.
 
+Параметр ulimit -n также определяет количиство открытых файловых дескрипторов и это значение должно быть меньшe fs.nr_open.
+ulimit -n
+1024
 
 п.6
-
+Запускаем screen
+screen -S unshare
+Далее, в скрине выполняем команду unshare -f --pid --mount-proc sleep 1h
+Выходим из скрина
+Выполняем команду lsns
+sudo lsns | grep sleep
+4026532131 mnt         2  8470 root             unshare -f --pid --mount-proc sleep 1h
+4026532138 pid         1  8471 root             sleep 1h
+Далее выполняем команду
+sudo nsenter -t 8470 -m
+Переходим в пространство имен и выполняем команду pstree
+pstree -p
+sleep(1)
 
 п.7
-Данный синтаксис сначала определяет функцию, которая дважды рекурсивно вызывает сама себя и в фоне, а затем запускает эту функцию. 
+Данный синтаксис сначала определяет функцию, которая дважды рекурсивно вызывает сама себя в фоне, а затем запускает эту функцию. 
 Ситуацию помогла стабилизировать служба user.slice:
 [17556.910508] cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/user@1000.service
 [17572.001748] hrtimer: interrupt took 688585 ns
