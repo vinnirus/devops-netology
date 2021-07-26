@@ -1,179 +1,263 @@
 # devops-netology
 devops-10 student
 
-HW-3.4. Операционные системы, лекция 2
+HW-3.5. Файловые системы
 
 **************
-Использовал виртуализацию parallels c ВМ ubuntu 20.04 для arm64
+Использовал виртуализацию vbox c ВМ ubuntu 20.04 для x86_64
 **************
 
 п.1
-В репозитории не оказалось пакета node_exporter дяя требуемой архитектуры, поэтому:
-
-Установил компилятор golang
-sudo snap install go --classic
-
-Далее я клонировал исходники и скомпилировал код в исполняемые файлы
-git clone https://github.com/prometheus/node_exporter.git
-cd node_exporter/
-go build
-
-Определил юнит-файл для будущего сервиса
-
-touch /etc/systemd/system/node_exporter.service
-vim node_exporter.service
-##############################
-[Unit]
-Description=Node Exporter
- 
-[Service]
-ExecStart=/opt/node_exporter/node_exporter
- 
-[Install]
-WantedBy=default.target
-##############################
-
-Затем перечитал настройки для systemctl
-systemctl daemon-reload
-
-Активировал автозагрузку службы
-systemctl enable node_exporter.service
-
-И запустил службу
-systemctl start node_exporter.service
-
-Для того, чтобы предусмотреть возможность добавления опций к запускаемому процессу, необходимо создать конфигурационный файл
-Например, изменим порт по которому будет доступна служба
-echo 'ARGS=--web.listen-address=localhost:9991' > /etc/node_exporter.conf
-
-И прописать путь к конфигурационному файлу в описании юнита
-vim /etc/systemd/system/node_exporter.service
-Добавили строку EnvironmentFile=/etc/node_exporter.conf и изменили значение для параметра ExecStart в раздел [Service]
-[Service]
-EnvironmentFile=/etc/node_exporter.conf
-ExecStart=/opt/node_exporter/node_exporter $ARGS
-
-Затем необходимо перечитать настройки systemctl
-systemctl daemon-reload
-
-И перезапустить службу
-systemctl restart node_exporter.service
-
-Для проверки выполним
-curl localhost:9991/metrics > /home/parallels/mon.metrics
-tail /home/parallels/mon.metrics
-
-root@ubuntu-linux-20-04-desktop:/etc/systemd/system# tail /home/parallels/mon.metrics 
-promhttp_metric_handler_errors_total{cause="encoding"} 0
-promhttp_metric_handler_errors_total{cause="gathering"} 0
-# HELP promhttp_metric_handler_requests_in_flight Current number of scrapes being served.
-# TYPE promhttp_metric_handler_requests_in_flight gauge
-promhttp_metric_handler_requests_in_flight 1
-# HELP promhttp_metric_handler_requests_total Total number of scrapes by HTTP status code.
-# TYPE promhttp_metric_handler_requests_total counter
-promhttp_metric_handler_requests_total{code="200"} 3
-promhttp_metric_handler_requests_total{code="500"} 0
-promhttp_metric_handler_requests_total{code="503"} 0
-
-
-Ниже приведен вывод команды systemctl status node_exporter.service после перезапуска ВМ:
-
-root@ubuntu-linux-20-04-desktop:/etc/systemd/system# systemctl status node_exporter.service
-● node_exporter.service - Node Exporter
-     Loaded: loaded (/etc/systemd/system/node_exporter.service; enabled; vendor preset: enabled)
-     Active: active (running) since Thu 2021-07-22 15:40:55 MSK; 8min ago
-   Main PID: 20692 (node_exporter)
-      Tasks: 6 (limit: 2268)
-     Memory: 8.1M
-     CGroup: /system.slice/node_exporter.service
-             └─20692 /opt/node_exporter/node_exporter --web.listen-address=localhost:9991
-
-Jul 22 15:40:55 ubuntu-linux-20-04-desktop node_exporter[20692]: level=info ts=2021-07-22T12:40:55.898Z caller=node_exporter.go:115 collector>
-Jul 22 15:40:55 ubuntu-linux-20-04-desktop node_exporter[20692]: level=info ts=2021-07-22T12:40:55.898Z caller=node_exporter.go:115 collector>
-Jul 22 15:40:55 ubuntu-linux-20-04-desktop node_exporter[20692]: level=info ts=2021-07-22T12:40:55.898Z caller=node_exporter.go:115 collector>
-Jul 22 15:40:55 ubuntu-linux-20-04-desktop node_exporter[20692]: level=info ts=2021-07-22T12:40:55.898Z caller=node_exporter.go:115 collector>
-Jul 22 15:40:55 ubuntu-linux-20-04-desktop node_exporter[20692]: level=info ts=2021-07-22T12:40:55.899Z caller=node_exporter.go:199 msg="List>
-Jul 22 15:40:55 ubuntu-linux-20-04-desktop node_exporter[20692]: level=info ts=2021-07-22T12:40:55.899Z caller=tls_config.go:191 msg="TLS is >
-Jul 22 15:41:07 ubuntu-linux-20-04-desktop node_exporter[20692]: level=error ts=2021-07-22T12:41:07.788Z caller=collector.go:169 msg="collect>
-Jul 22 15:41:21 ubuntu-linux-20-04-desktop node_exporter[20692]: level=error ts=2021-07-22T12:41:21.413Z caller=collector.go:169 msg="collect>
-Jul 22 15:46:54 ubuntu-linux-20-04-desktop node_exporter[20692]: level=error ts=2021-07-22T12:46:54.654Z caller=collector.go:169 msg="collect>
-Jul 22 15:47:44 ubuntu-linux-20-04-desktop node_exporter[20692]: level=error ts=2021-07-22T12:47:44.343Z caller=collector.go:169 msg="collect>
+Разреженным называется файл, в котором последовательности нулевых байтов заменены на информацию об этих последовательностях (список дыр).
 
 п.2
-На основании имеющихся метрик, для мониторинга состояния сервера я выбрал:
-[cpu]
-node_cpu_seconds_total,
-[disk/io]
-node_disk_io_now
-node_disk_io_time_seconds_total
-node_filesystem_free_bytes
-[ram]
-node_memory_MemTotal_bytes
-node_memory_Cached_bytes
-node_memory_MemAvailable_bytes
-node_memory_Shmem_bytes
-[net]
-node_network_receive_bytes_total
-node_network_receive_errs_total
-node_network_up
-
+Жесткая ссылка и файл, для которого она создавалась имеют одинаковые inode. Поэтому жесткая ссылка имеет те же права доступа, владельца и время последней модификации, что и целевой файл. Различаются только имена файлов. Фактически жесткая ссылка это еще одно имя для файла.
+Жесткие ссылки появились раньше, чем символические, но сейчас уже устаревают. В повседневной работе жесткие ссылки используются редко.
+ 
 п.3
-netdata предоставляет средства визуализиции мониторинга в части утилизации основных ресурсов сервера:
-System Overview - Swap - Disk read - Disk write - CPU - Net Inbound - Net Outbound - Used RAM - interrupts - softirqs - softnet - entropy - uptime - ipc semaphores  т.д.
+Вывод команды lsblk после создания VagrantFile и запуска ВМ:
 
-Затем на странице располагаются более детализированные графики: утилизация каждого из ядер процессора, график памяти kernel, ожидающей записи на диск, память, используемая kernel, утилизация каждого из существующих разделов диска, детальные графики утилизации сети.
+vagrant@vagrant:~$ lsblk
+NAME                 MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                    8:0    0   64G  0 disk
+├─sda1                 8:1    0  512M  0 part /boot/efi
+├─sda2                 8:2    0    1K  0 part
+└─sda5                 8:5    0 63.5G  0 part
+  ├─vgvagrant-root   253:0    0 62.6G  0 lvm  /
+  └─vgvagrant-swap_1 253:1    0  980M  0 lvm  [SWAP]
+sdb                    8:16   0  2.5G  0 disk
+sdc                    8:32   0  2.5G  0 disk
 
 п.4
-Да, после инициализации аппаратных ресурсов в логах dmesg можно увидеть записи вида:
-[    2.645102] systemd[1]: Detected virtualization parallels.
-[    2.645105] systemd[1]: Detected architecture arm64.
+Результат работы fdisk по созднанию разделов:
+
+vagrant@vagrant:/$ lsblk
+NAME                 MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                    8:0    0   64G  0 disk
+├─sda1                 8:1    0  512M  0 part /boot/efi
+├─sda2                 8:2    0    1K  0 part
+└─sda5                 8:5    0 63.5G  0 part
+  ├─vgvagrant-root   253:0    0 62.6G  0 lvm  /
+  └─vgvagrant-swap_1 253:1    0  980M  0 lvm  [SWAP]
+sdb                    8:16   0  2.5G  0 disk
+├─sdb1                 8:17   0  1.9G  0 part
+└─sdb2                 8:18   0  652M  0 part
+sdc                    8:32   0  2.5G  0 disk
 
 п.5
-sysctl fs.nr_open
-fs.nr_open = 1048576
-Данный параметр определяет максимально возможное значение открытых файловых дескрипторов. По умолчанию для системы уставливается равным 1024*102, что равно 1048576.
+vagrant@vagrant:~$ sudo sfdisk -d /dev/sdb > partitions.sdb
+vagrant@vagrant:~$ sudo sfdisk /dev/sdc < partitions.sdb
+Checking that no-one is using this disk right now ... OK
 
-Параметр ulimit -n также определяет количиство открытых файловых дескрипторов и это значение должно быть меньшe fs.nr_open.
-ulimit -n
-1024
+Disk /dev/sdc: 2.51 GiB, 2684354560 bytes, 5242880 sectors
+Disk model: VBOX HARDDISK
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+>>> Script header accepted.
+>>> Script header accepted.
+>>> Script header accepted.
+>>> Script header accepted.
+>>> Created a new DOS disklabel with disk identifier 0xee43352c.
+/dev/sdc1: Created a new partition 1 of type 'Linux' and of size 1.9GiB.
+/dev/sdc2: Created a new partition 2 of type 'Linux' and of size 652 MiB.
+/dev/sdc3: Done.
+
+New situation:
+Disklabel type: dos
+Disk identifier: 0xee43352c
+
+Device     Boot   Start     End Sectors  Size Id Type
+/dev/sdc1          2048 3907583 3905536  1.9G 83 Linux
+/dev/sdc2       3907584 5242879 1335296  652M 83 Linux
+
+The partition table has been altered.
+Calling ioctl() to re-read partition table.
+Syncing disks.
+
+Вывод команды lsblk:
+vagrant@vagrant:~$ lsblk
+NAME                 MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                    8:0    0   64G  0 disk
+├─sda1                 8:1    0  512M  0 part /boot/efi
+├─sda2                 8:2    0    1K  0 part
+└─sda5                 8:5    0 63.5G  0 part
+  ├─vgvagrant-root   253:0    0 62.6G  0 lvm  /
+  └─vgvagrant-swap_1 253:1    0  980M  0 lvm  [SWAP]
+sdb                    8:16   0  2.5G  0 disk
+├─sdb1                 8:17   0  1.9G  0 part
+└─sdb2                 8:18   0  652M  0 part
+sdc                    8:32   0  2.5G  0 disk
+├─sdc1                 8:33   0  1.9G  0 part
+└─sdc2                 8:34   0  652M  0 part
 
 п.6
-Запускаем screen
-screen -S unshare
-Далее, в скрине выполняем команду unshare -f --pid --mount-proc sleep 1h
-Выходим из скрина
-Выполняем команду lsns
-sudo lsns | grep sleep
-4026532131 mnt         2  8470 root             unshare -f --pid --mount-proc sleep 1h
-4026532138 pid         1  8471 root             sleep 1h
-Далее выполняем команду
-sudo nsenter -t 8470 -m
-Переходим в пространство имен и выполняем команду pstree
-pstree -p
-sleep(1)
+vagrant@vagrant:~$ sudo mdadm --create /dev/md0 --level=1 --raid-devices=2 /dev/sdb1 /dev/sdc1
+mdadm: Note: this array has metadata at the start and
+    may not be suitable as a boot device.  If you plan to
+    store '/boot' on this device please ensure that
+    your boot-loader understands md/v1.x metadata, or use
+    --metadata=0.90
+Continue creating array? y
+mdadm: Defaulting to version 1.2 metadata
+mdadm: array /dev/md0 started.
+
+Вывод команды lsblk:
+vagrant@vagrant:~$ lsblk
+NAME                 MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
+sda                    8:0    0   64G  0 disk
+├─sda1                 8:1    0  512M  0 part  /boot/efi
+├─sda2                 8:2    0    1K  0 part
+└─sda5                 8:5    0 63.5G  0 part
+  ├─vgvagrant-root   253:0    0 62.6G  0 lvm   /
+  └─vgvagrant-swap_1 253:1    0  980M  0 lvm   [SWAP]
+sdb                    8:16   0  2.5G  0 disk
+├─sdb1                 8:17   0  1.9G  0 part
+│ └─md0                9:0    0  1.9G  0 raid1
+└─sdb2                 8:18   0  652M  0 part
+sdc                    8:32   0  2.5G  0 disk
+├─sdc1                 8:33   0  1.9G  0 part
+│ └─md0                9:0    0  1.9G  0 raid1
+└─sdc2                 8:34   0  652M  0 part
 
 п.7
-Данный синтаксис сначала определяет функцию, которая дважды рекурсивно вызывает сама себя в фоне, а затем запускает эту функцию. 
-Ситуацию помогла стабилизировать служба user.slice:
-[17556.910508] cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/user@1000.service
-[17572.001748] hrtimer: interrupt took 688585 ns
+vagrant@vagrant:~$ sudo mdadm --create /dev/md1 --level=0 --raid-devices=2 /dev/sdb2 /dev/sdc2
+mdadm: Defaulting to version 1.2 metadata
+mdadm: array /dev/md1 started.
 
-За максимальное количество задач отвечают несколько параметров:
-Глобальные настройки задаются в файле /etc/systemd/system.conf
-Параметр: 
-[Manager]
-DefaultTasksMax=15288
+Вывод команды lsblk:
+vagrant@vagrant:~$ lsblk
+NAME                 MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
+sda                    8:0    0   64G  0 disk
+├─sda1                 8:1    0  512M  0 part  /boot/efi
+├─sda2                 8:2    0    1K  0 part
+└─sda5                 8:5    0 63.5G  0 part
+  ├─vgvagrant-root   253:0    0 62.6G  0 lvm   /
+  └─vgvagrant-swap_1 253:1    0  980M  0 lvm   [SWAP]
+sdb                    8:16   0  2.5G  0 disk
+├─sdb1                 8:17   0  1.9G  0 part
+│ └─md0                9:0    0  1.9G  0 raid1
+└─sdb2                 8:18   0  652M  0 part
+  └─md1                9:1    0  1.3G  0 raid0
+sdc                    8:32   0  2.5G  0 disk
+├─sdc1                 8:33   0  1.9G  0 part
+│ └─md0                9:0    0  1.9G  0 raid1
+└─sdc2                 8:34   0  652M  0 part
+  └─md1                9:1    0  1.3G  0 raid0
+  
+п.8
+vagrant@vagrant:~$ sudo pvcreate /dev/md0
+  Physical volume "/dev/md0" successfully created.
+vagrant@vagrant:~$ sudo pvcreate /dev/md1
+  Physical volume "/dev/md1" successfully created.
+  
+п.9
+vagrant@vagrant:~$ sudo vgcreate vg_raid /dev/md0 /dev/md1
+  Volume group "vg_raid" successfully created
+  
+п.10
+vagrant@vagrant:~$ sudo lvcreate -n lv_01 -L 100M /dev/vg_raid /dev/md1
+  Logical volume "lv_01" created.
+  
+п.11
+vagrant@vagrant:~$ sudo mkfs.ext4 /dev/vg_raid/lv_01
+mke2fs 1.45.5 (07-Jan-2020)
+Creating filesystem with 25600 4k blocks and 25600 inodes
 
-Настройки для всех пользователей задаются в файле /etc/systemd/logind.conf file:
-Параметр
-[Login]
-UserTasksMax = 12288
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (1024 blocks): done
+Writing superblocks and filesystem accounting information: done
 
-Для текущего пользователя с UID = number параметры указываются в файле /etc/systemd/system/user-<number>.slice.d/50-tasksmax.conf
-Параметр
-[Slice]
-TasksMax=18000
+п.12
+vagrant@vagrant:~$ mkdir /tmp/new
+vagrant@vagrant:~$ sudo mount /dev/vg_raid/lv_01 /tmp/new
 
-Все вышеописанные настройки вступят в силу после перезагрузки системы или сессии пользователя
-Кроме этого, значение можно изменить на лету, зная UID пользователя:
-systemctl set-property user-<UID>.slice TasksMax=<Значение>
+vagrant@vagrant:~$ ls -la /tmp/new
+total 24
+drwxr-xr-x  3 root root  4096 Jul 26 14:39 .
+drwxrwxrwt 11 root root  4096 Jul 26 14:42 ..
+drwx------  2 root root 16384 Jul 26 14:39 lost+found
+
+п.13
+vagrant@vagrant:/tmp/new$ sudo wget --quiet https://mirror.yandex.ru/ubuntu/ls-lR.gz -O /tmp/new/test.gz
+
+Просмотрим содержимое каталога /tmp/new:
+vagrant@vagrant:/tmp/new$ ls -la ./
+total 24
+drwxr-xr-x  3 root root  4096 Jul 26 14:43 .
+drwxrwxrwt 11 root root  4096 Jul 26 15:56 ..
+drwx------  2 root root 16384 Jul 26 14:39 lost+found
+-rw-r--r--  1 root root     0 Jul 26 17:07 test.gz
+
+п.14
+NAME                 MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
+sda                    8:0    0   64G  0 disk
+├─sda1                 8:1    0  512M  0 part  /boot/efi
+├─sda2                 8:2    0    1K  0 part
+└─sda5                 8:5    0 63.5G  0 part
+  ├─vgvagrant-root   253:0    0 62.6G  0 lvm   /
+  └─vgvagrant-swap_1 253:1    0  980M  0 lvm   [SWAP]
+sdb                    8:16   0  2.5G  0 disk
+├─sdb1                 8:17   0  1.9G  0 part
+│ └─md0                9:127  0  1.9G  0 raid1
+└─sdb2                 8:18   0  652M  0 part
+  └─md1                9:126  0  1.3G  0 raid0
+    └─vg_raid-lv_01  253:2    0  100M  0 lvm   /tmp/new
+sdc                    8:32   0  2.5G  0 disk
+├─sdc1                 8:33   0  1.9G  0 part
+│ └─md0                9:127  0  1.9G  0 raid1
+└─sdc2                 8:34   0  652M  0 part
+  └─md1                9:126  0  1.3G  0 raid0
+    └─vg_raid-lv_01  253:2    0  100M  0 lvm   /tmp/new
+
+п.15
+root@vagrant:/tmp/new# ls
+lost+found  test.gz
+root@vagrant:/tmp/new# gzip -t /tmp/new/test.gz
+root@vagrant:/tmp/new# echo $?
+0
+
+п.16
+vagrant@vagrant:/tmp/$ sudo pvmove -n lv_01 /dev/md1 /dev/md0
+  /dev/md1: Moved: 16% 
+  /dev/md1: Moved: 100%
+
+Вывод команды lsblk:
+vagrant@vagrant:/$ lsblk
+NAME                 MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
+sda                    8:0    0   64G  0 disk
+├─sda1                 8:1    0  512M  0 part  /boot/efi
+├─sda2                 8:2    0    1K  0 part
+└─sda5                 8:5    0 63.5G  0 part
+  ├─vgvagrant-root   253:0    0 62.6G  0 lvm   /
+  └─vgvagrant-swap_1 253:1    0  980M  0 lvm   [SWAP]
+sdb                    8:16   0  2.5G  0 disk
+├─sdb1                 8:17   0  1.9G  0 part
+│ └─md0                9:127  0  1.9G  0 raid1
+│   └─vg_raid-lv_01  253:2    0  100M  0 lvm   /tmp/new
+└─sdb2                 8:18   0  652M  0 part
+  └─md1                9:126  0  1.3G  0 raid0
+sdc                    8:32   0  2.5G  0 disk
+├─sdc1                 8:33   0  1.9G  0 part
+│ └─md0              9:127  0  1.9G  0 raid1
+│   └─vg_raid-lv_01  253:2    0  100M  0 lvm   /tmp/new
+└─sdc2                 8:34   0  652M  0 part
+  └─md1                9:126  0  1.3G  0 raid0
+  
+п.17
+vagrant@vagrant:/$ sudo mdadm /dev/md0 --fail /dev/sdc1
+mdadm: set /dev/sdc1 faulty in /dev/md0
+
+п.18
+vagrant@vagrant:/$ dmesg
+[ 1380.824801] md/raid1:md0: Disk failure on sdc1, disabling device.
+               md/raid1:md0: Operation continuing on 1 devices.
+			   
+п.19
+root@vagrant:/tmp/new# ls
+lost+found  test.gz
+root@vagrant:/tmp/new# gzip -t /tmp/new/test.gz
+root@vagrant:/tmp/new# echo $?
+0
