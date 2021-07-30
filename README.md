@@ -50,10 +50,10 @@ Status		200
 Version		HTTP/2
 Transferred	57.16 KB (202.07 KB size)
 
-в этом случае коды ответов и времена будут соответствовать изображению https://ibb.co/YXCpzQ7.
+в этом случае коды ответов и времена будут соответствовать изображению http://joxi.ru/DrlDbxEcGG6vqr.
 
 Если же в адресной строке указать http://stackoverflow:80, то поведение будет идентично п.1 с кодом 301 и редиректом на https://stackoverflow.com
-в этом случае коды ответов и времена будут соответствовать изображению https://ibb.co/19DnYtt.
+в этом случае коды ответов и времена будут соответствовать изображению http://joxi.ru/Y2LOK18fMMY9jm.
 
 п.3
 parallels@ubuntu-linux-20-04-desktop:~$ wget -qO - eth0.me
@@ -79,9 +79,82 @@ descr:          MF-MOSCOW-NAT-POOL-178-176-64-0
 origin:         AS25159
 
 п.5
+parallels@ubuntu-linux-20-04-desktop:~$ traceroute 8.8.8.8
+traceroute to 8.8.8.8 (8.8.8.8), 64 hops max
+  1   8.8.8.8  17.045ms  16.275ms  15.981ms 
+
+parallels@ubuntu-linux-20-04-desktop:~$ ping -i 1 8.8.8.8
+PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+64 bytes from 8.8.8.8: icmp_seq=1 ttl=128 time=17.6 ms
+64 bytes from 8.8.8.8: icmp_seq=2 ttl=128 time=17.7 ms
+64 bytes from 8.8.8.8: icmp_seq=3 ttl=128 time=17.6 ms
+
+parallels@ubuntu-linux-20-04-desktop:~$ whois -I 8.8.8.8
+
+NetRange:       8.8.8.0 - 8.8.8.255
+CIDR:           8.8.8.0/24
+NetName:        LVLT-GOGL-8-8-8
+NetHandle:      NET-8-8-8-0-1
+Parent:         LVLT-ORG-8-8 (NET-8-0-0-0-1)
+NetType:        Reallocated
+OriginAS:       
+Organization:   Google LLC (GOGL)
+RegDate:        2014-03-14
+Updated:        2014-03-14
+Ref:            https://rdap.arin.net/registry/ip/8.8.8.0
+
+
+OrgName:        Google LLC
+OrgId:          GOGL
+Address:        1600 Amphitheatre Parkway
+City:           Mountain View
+StateProv:      CA
 
 п.6
+parallels@ubuntu-linux-20-04-desktop:~$ mtr -r -w -z -j -c 10 8.8.8.8 > ./mtr.out.json
+parallels@ubuntu-linux-20-04-desktop:~$ less mtr.out.json
+
+{
+  "report": {
+    "mtr": {
+      "src": "ubuntu-linux-20-04-desktop",
+      "dst": "8.8.8.8",
+      "tos": "0x0",
+      "psize": "64",
+      "bitpattern": "0x00",
+      "tests": "10"
+    },
+    "hubs": [{
+      "count": "1",
+      "host": "dns.google",
+      "ASN": "AS15169",
+      "Loss%": 0.00,
+      "Snt": 10,
+      "Last": 16.87,
+      "Avg": 34.93,
+      "Best": 16.87,
+      "Wrst": 134.47,
+      "StDev": 35.58
+    }]
+  }
 
 п.7
-  
+parallels@ubuntu-linux-20-04-desktop:~$ dig -t ANY dns.google +noall +answer
+
+dns.google.		3568	IN	A	8.8.4.4
+dns.google.		3568	IN	A	8.8.8.8
+dns.google.		3568	IN	RRSIG	A 8 2 900 20210829161016 20210730161016 1773 dns.google. JYSlVxqwA9LHOlOp8Vxohsa5zv9wO34/BDf9miZcAvMnlSlRwse5sbje nNXLp/DKQ5h3ab6WbdHEkPvkRFjUr/DwXF09kCv+R92q2fgKu9jvF0aA LbG+I255DhRwbQGVN0xSyT6i4QOfdGIU/NeuUmFQ3iY7PZySnvR+KDo+ snY=
+dns.google.		524	IN	RRSIG	AAAA 8 2 900 20210829161016 20210730161016 1773 dns.google. DRkYro14B7TId3qPFfG3/PCsQnlAEnmxfatUP5YnuOvIih2f7a9FUo1D OiWv/pfi3RYdxWmfBbYBkJJFRq80WZ6e5bfVciZYD4Zt8aumcFTdhuSU hNS90BokooqJJY9iNg70vQBmXBNBuEhelemnTchi7VeD7Z+X0NXtFrrC aXs=
+
+A-записи:
+dns.google.		3568	IN	A	8.8.4.4
+dns.google.		3568	IN	A	8.8.8.8
+
 п.8
+parallels@ubuntu-linux-20-04-desktop:~$ dig -x 8.8.4.4 +noall +answer
+4.4.8.8.in-addr.arpa.	5533	IN	PTR	dns.google.
+
+parallels@ubuntu-linux-20-04-desktop:~$ dig -x 8.8.8.8 +noall +answer
+8.8.8.8.in-addr.arpa.	5565	IN	PTR	dns.google.
+
+PTR-запись: dns.google.
