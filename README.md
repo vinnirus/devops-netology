@@ -1,263 +1,87 @@
 # devops-netology
 devops-10 student
 
-HW-3.5. Файловые системы
+HW-3.6. Компьютерные сети, лекция 1
 
 **************
-Использовал виртуализацию vbox c ВМ ubuntu 20.04 для x86_64
+Использовал виртуализацию parallels c ВМ ubuntu 20.04 для arm64
 **************
 
 п.1
-Разреженным называется файл, в котором последовательности нулевых байтов заменены на информацию об этих последовательностях (список дыр).
+parallels@ubuntu-linux-20-04-desktop:~$ telnet stackoverflow.com 80
+Trying 151.101.129.69...
+Connected to stackoverflow.com.
+Escape character is '^]'.
+GET /questions HTTP/1.0
+HOST: stackoverflow.com
+
+HTTP/1.1 301 Moved Permanently
+cache-control: no-cache, no-store, must-revalidate
+location: https://stackoverflow.com/questions
+x-request-guid: bca82a93-62da-4e5e-9535-e7f60d900341
+feature-policy: microphone 'none'; speaker 'none'
+content-security-policy: upgrade-insecure-requests; frame-ancestors 'self' https://stackexchange.com
+Accept-Ranges: bytes
+Date: Tue, 27 Jul 2021 12:14:17 GMT
+Via: 1.1 varnish
+Connection: close
+X-Served-By: cache-hhn4025-HHN
+X-Cache: MISS
+X-Cache-Hits: 0
+X-Timer: S1627388058.893455,VS0,VE86
+Vary: Fastly-SSL
+X-DNS-Prefetch-Control: off
+Set-Cookie: prov=864fdb6f-27dd-a07c-8b0c-9f4700956fad; domain=.stackoverflow.com; expires=Fri, 01-Jan-2055 00:00:00 GMT; path=/; HttpOnly
+
+Connection closed by foreign host.
+
+Сервер вернул код 301, это означает, что запрошенному ресурсу был назначен новый постоянный URI https://stackoverflow.com/questions и любые будущие ссылки на этот ресурс ДОЛЖНЫ использовать этот URI.
 
 п.2
-Жесткая ссылка и файл, для которого она создавалась имеют одинаковые inode. Поэтому жесткая ссылка имеет те же права доступа, владельца и время последней модификации, что и целевой файл. Различаются только имена файлов. Фактически жесткая ссылка это еще одно имя для файла.
-Жесткие ссылки появились раньше, чем символические, но сейчас уже устаревают. В повседневной работе жесткие ссылки используются редко.
- 
-п.3
-Вывод команды lsblk после создания VagrantFile и запуска ВМ:
+Если указать в адресной строке http://stackoverflow.com, то сразу происходит редирект на https://stackoverflow.com, 
 
-vagrant@vagrant:~$ lsblk
-NAME                 MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
-sda                    8:0    0   64G  0 disk
-├─sda1                 8:1    0  512M  0 part /boot/efi
-├─sda2                 8:2    0    1K  0 part
-└─sda5                 8:5    0 63.5G  0 part
-  ├─vgvagrant-root   253:0    0 62.6G  0 lvm  /
-  └─vgvagrant-swap_1 253:1    0  980M  0 lvm  [SWAP]
-sdb                    8:16   0  2.5G  0 disk
-sdc                    8:32   0  2.5G  0 disk
+GET	
+scheme		https
+host		stackoverflow.com
+filename	/
+Address		151.101.65.69:443
+Status		200
+		OK
+Version		HTTP/2
+Transferred	57.16 KB (202.07 KB size)
+
+в этом случае коды ответов и времена будут соответствовать изображению https://ibb.co/YXCpzQ7.
+
+Если же в адресной строке указать http://stackoverflow:80, то поведение будет идентично п.1 с кодом 301 и редиректом на https://stackoverflow.com
+в этом случае коды ответов и времена будут соответствовать изображению https://ibb.co/19DnYtt.
+
+п.3
+parallels@ubuntu-linux-20-04-desktop:~$ wget -qO - eth0.me
+178.176.78.186
 
 п.4
-Результат работы fdisk по созднанию разделов:
+parallels@ubuntu-linux-20-04-desktop:~$ whois 178.176.78.186
 
-vagrant@vagrant:/$ lsblk
-NAME                 MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
-sda                    8:0    0   64G  0 disk
-├─sda1                 8:1    0  512M  0 part /boot/efi
-├─sda2                 8:2    0    1K  0 part
-└─sda5                 8:5    0 63.5G  0 part
-  ├─vgvagrant-root   253:0    0 62.6G  0 lvm  /
-  └─vgvagrant-swap_1 253:1    0  980M  0 lvm  [SWAP]
-sdb                    8:16   0  2.5G  0 disk
-├─sdb1                 8:17   0  1.9G  0 part
-└─sdb2                 8:18   0  652M  0 part
-sdc                    8:32   0  2.5G  0 disk
+organisation:   ORG-OM1-RIPE
+org-name:       PJSC MegaFon
+country:        RU
+org-type:       LIR
+address:        41, Oruzheyniy lane
+address:        127006
+address:        Moscow
+address:        RUSSIAN FEDERATION
+phone:          +74955077777
+
+% Information related to '178.176.64.0/19AS25159'
+
+route:          178.176.64.0/19
+descr:          MF-MOSCOW-NAT-POOL-178-176-64-0
+origin:         AS25159
 
 п.5
-vagrant@vagrant:~$ sudo sfdisk -d /dev/sdb > partitions.sdb
-vagrant@vagrant:~$ sudo sfdisk /dev/sdc < partitions.sdb
-Checking that no-one is using this disk right now ... OK
-
-Disk /dev/sdc: 2.51 GiB, 2684354560 bytes, 5242880 sectors
-Disk model: VBOX HARDDISK
-Units: sectors of 1 * 512 = 512 bytes
-Sector size (logical/physical): 512 bytes / 512 bytes
-I/O size (minimum/optimal): 512 bytes / 512 bytes
-
->>> Script header accepted.
->>> Script header accepted.
->>> Script header accepted.
->>> Script header accepted.
->>> Created a new DOS disklabel with disk identifier 0xee43352c.
-/dev/sdc1: Created a new partition 1 of type 'Linux' and of size 1.9GiB.
-/dev/sdc2: Created a new partition 2 of type 'Linux' and of size 652 MiB.
-/dev/sdc3: Done.
-
-New situation:
-Disklabel type: dos
-Disk identifier: 0xee43352c
-
-Device     Boot   Start     End Sectors  Size Id Type
-/dev/sdc1          2048 3907583 3905536  1.9G 83 Linux
-/dev/sdc2       3907584 5242879 1335296  652M 83 Linux
-
-The partition table has been altered.
-Calling ioctl() to re-read partition table.
-Syncing disks.
-
-Вывод команды lsblk:
-vagrant@vagrant:~$ lsblk
-NAME                 MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
-sda                    8:0    0   64G  0 disk
-├─sda1                 8:1    0  512M  0 part /boot/efi
-├─sda2                 8:2    0    1K  0 part
-└─sda5                 8:5    0 63.5G  0 part
-  ├─vgvagrant-root   253:0    0 62.6G  0 lvm  /
-  └─vgvagrant-swap_1 253:1    0  980M  0 lvm  [SWAP]
-sdb                    8:16   0  2.5G  0 disk
-├─sdb1                 8:17   0  1.9G  0 part
-└─sdb2                 8:18   0  652M  0 part
-sdc                    8:32   0  2.5G  0 disk
-├─sdc1                 8:33   0  1.9G  0 part
-└─sdc2                 8:34   0  652M  0 part
 
 п.6
-vagrant@vagrant:~$ sudo mdadm --create /dev/md0 --level=1 --raid-devices=2 /dev/sdb1 /dev/sdc1
-mdadm: Note: this array has metadata at the start and
-    may not be suitable as a boot device.  If you plan to
-    store '/boot' on this device please ensure that
-    your boot-loader understands md/v1.x metadata, or use
-    --metadata=0.90
-Continue creating array? y
-mdadm: Defaulting to version 1.2 metadata
-mdadm: array /dev/md0 started.
-
-Вывод команды lsblk:
-vagrant@vagrant:~$ lsblk
-NAME                 MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
-sda                    8:0    0   64G  0 disk
-├─sda1                 8:1    0  512M  0 part  /boot/efi
-├─sda2                 8:2    0    1K  0 part
-└─sda5                 8:5    0 63.5G  0 part
-  ├─vgvagrant-root   253:0    0 62.6G  0 lvm   /
-  └─vgvagrant-swap_1 253:1    0  980M  0 lvm   [SWAP]
-sdb                    8:16   0  2.5G  0 disk
-├─sdb1                 8:17   0  1.9G  0 part
-│ └─md0                9:0    0  1.9G  0 raid1
-└─sdb2                 8:18   0  652M  0 part
-sdc                    8:32   0  2.5G  0 disk
-├─sdc1                 8:33   0  1.9G  0 part
-│ └─md0                9:0    0  1.9G  0 raid1
-└─sdc2                 8:34   0  652M  0 part
 
 п.7
-vagrant@vagrant:~$ sudo mdadm --create /dev/md1 --level=0 --raid-devices=2 /dev/sdb2 /dev/sdc2
-mdadm: Defaulting to version 1.2 metadata
-mdadm: array /dev/md1 started.
-
-Вывод команды lsblk:
-vagrant@vagrant:~$ lsblk
-NAME                 MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
-sda                    8:0    0   64G  0 disk
-├─sda1                 8:1    0  512M  0 part  /boot/efi
-├─sda2                 8:2    0    1K  0 part
-└─sda5                 8:5    0 63.5G  0 part
-  ├─vgvagrant-root   253:0    0 62.6G  0 lvm   /
-  └─vgvagrant-swap_1 253:1    0  980M  0 lvm   [SWAP]
-sdb                    8:16   0  2.5G  0 disk
-├─sdb1                 8:17   0  1.9G  0 part
-│ └─md0                9:0    0  1.9G  0 raid1
-└─sdb2                 8:18   0  652M  0 part
-  └─md1                9:1    0  1.3G  0 raid0
-sdc                    8:32   0  2.5G  0 disk
-├─sdc1                 8:33   0  1.9G  0 part
-│ └─md0                9:0    0  1.9G  0 raid1
-└─sdc2                 8:34   0  652M  0 part
-  └─md1                9:1    0  1.3G  0 raid0
   
 п.8
-vagrant@vagrant:~$ sudo pvcreate /dev/md0
-  Physical volume "/dev/md0" successfully created.
-vagrant@vagrant:~$ sudo pvcreate /dev/md1
-  Physical volume "/dev/md1" successfully created.
-  
-п.9
-vagrant@vagrant:~$ sudo vgcreate vg_raid /dev/md0 /dev/md1
-  Volume group "vg_raid" successfully created
-  
-п.10
-vagrant@vagrant:~$ sudo lvcreate -n lv_01 -L 100M /dev/vg_raid /dev/md1
-  Logical volume "lv_01" created.
-  
-п.11
-vagrant@vagrant:~$ sudo mkfs.ext4 /dev/vg_raid/lv_01
-mke2fs 1.45.5 (07-Jan-2020)
-Creating filesystem with 25600 4k blocks and 25600 inodes
-
-Allocating group tables: done
-Writing inode tables: done
-Creating journal (1024 blocks): done
-Writing superblocks and filesystem accounting information: done
-
-п.12
-vagrant@vagrant:~$ mkdir /tmp/new
-vagrant@vagrant:~$ sudo mount /dev/vg_raid/lv_01 /tmp/new
-
-vagrant@vagrant:~$ ls -la /tmp/new
-total 24
-drwxr-xr-x  3 root root  4096 Jul 26 14:39 .
-drwxrwxrwt 11 root root  4096 Jul 26 14:42 ..
-drwx------  2 root root 16384 Jul 26 14:39 lost+found
-
-п.13
-vagrant@vagrant:/tmp/new$ sudo wget --quiet https://mirror.yandex.ru/ubuntu/ls-lR.gz -O /tmp/new/test.gz
-
-Просмотрим содержимое каталога /tmp/new:
-vagrant@vagrant:/tmp/new$ ls -la ./
-total 24
-drwxr-xr-x  3 root root  4096 Jul 26 14:43 .
-drwxrwxrwt 11 root root  4096 Jul 26 15:56 ..
-drwx------  2 root root 16384 Jul 26 14:39 lost+found
--rw-r--r--  1 root root     0 Jul 26 17:07 test.gz
-
-п.14
-NAME                 MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
-sda                    8:0    0   64G  0 disk
-├─sda1                 8:1    0  512M  0 part  /boot/efi
-├─sda2                 8:2    0    1K  0 part
-└─sda5                 8:5    0 63.5G  0 part
-  ├─vgvagrant-root   253:0    0 62.6G  0 lvm   /
-  └─vgvagrant-swap_1 253:1    0  980M  0 lvm   [SWAP]
-sdb                    8:16   0  2.5G  0 disk
-├─sdb1                 8:17   0  1.9G  0 part
-│ └─md0                9:127  0  1.9G  0 raid1
-└─sdb2                 8:18   0  652M  0 part
-  └─md1                9:126  0  1.3G  0 raid0
-    └─vg_raid-lv_01  253:2    0  100M  0 lvm   /tmp/new
-sdc                    8:32   0  2.5G  0 disk
-├─sdc1                 8:33   0  1.9G  0 part
-│ └─md0                9:127  0  1.9G  0 raid1
-└─sdc2                 8:34   0  652M  0 part
-  └─md1                9:126  0  1.3G  0 raid0
-    └─vg_raid-lv_01  253:2    0  100M  0 lvm   /tmp/new
-
-п.15
-root@vagrant:/tmp/new# ls
-lost+found  test.gz
-root@vagrant:/tmp/new# gzip -t /tmp/new/test.gz
-root@vagrant:/tmp/new# echo $?
-0
-
-п.16
-vagrant@vagrant:/tmp/$ sudo pvmove -n lv_01 /dev/md1 /dev/md0
-  /dev/md1: Moved: 16% 
-  /dev/md1: Moved: 100%
-
-Вывод команды lsblk:
-vagrant@vagrant:/$ lsblk
-NAME                 MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
-sda                    8:0    0   64G  0 disk
-├─sda1                 8:1    0  512M  0 part  /boot/efi
-├─sda2                 8:2    0    1K  0 part
-└─sda5                 8:5    0 63.5G  0 part
-  ├─vgvagrant-root   253:0    0 62.6G  0 lvm   /
-  └─vgvagrant-swap_1 253:1    0  980M  0 lvm   [SWAP]
-sdb                    8:16   0  2.5G  0 disk
-├─sdb1                 8:17   0  1.9G  0 part
-│ └─md0                9:127  0  1.9G  0 raid1
-│   └─vg_raid-lv_01  253:2    0  100M  0 lvm   /tmp/new
-└─sdb2                 8:18   0  652M  0 part
-  └─md1                9:126  0  1.3G  0 raid0
-sdc                    8:32   0  2.5G  0 disk
-├─sdc1                 8:33   0  1.9G  0 part
-│ └─md0              9:127  0  1.9G  0 raid1
-│   └─vg_raid-lv_01  253:2    0  100M  0 lvm   /tmp/new
-└─sdc2                 8:34   0  652M  0 part
-  └─md1                9:126  0  1.3G  0 raid0
-  
-п.17
-vagrant@vagrant:/$ sudo mdadm /dev/md0 --fail /dev/sdc1
-mdadm: set /dev/sdc1 faulty in /dev/md0
-
-п.18
-vagrant@vagrant:/$ dmesg
-[ 1380.824801] md/raid1:md0: Disk failure on sdc1, disabling device.
-               md/raid1:md0: Operation continuing on 1 devices.
-			   
-п.19
-root@vagrant:/tmp/new# ls
-lost+found  test.gz
-root@vagrant:/tmp/new# gzip -t /tmp/new/test.gz
-root@vagrant:/tmp/new# echo $?
-0
