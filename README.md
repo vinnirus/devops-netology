@@ -101,4 +101,31 @@ iface bond0 inet static
 $ sudo systemctl restart networking.service
 
 п.5
-маска /29 может содержать до 8 Ip-адресов
+Маска /29 может содержать до 6 Ip-адресов.
+В подсети /24 может разместиться 32 подсети с маской /29, при этом всего можно разместить суммарно 192 хоста.
+Пример:
+10.10.10.0/29
+10.10.10.8/29
+10.10.10.16/29
+
+п.6
+100.64.0.0/26
+100.64.0.64/26
+
+п.7
+Для Windows:
+arp -a
+
+Для Linux:
+parallels@ubuntu-linux-20-04-desktop:~$ arp -a
+
+Очистить arp таблицу:
+parallels@ubuntu-linux-20-04-desktop:~$ arp -d -a
+
+удалить 1 адрес из arp таблицы:
+parallels@ubuntu-linux-20-04-desktop:~$ arp -a
+prl-local-ns-server.shared (10.211.55.1) at 00:1c:42:00:00:18 [ether] on eth0
+parallels@ubuntu-linux-20-04-desktop:~$ sudo arp -d 10.211.55.1
+parallels@ubuntu-linux-20-04-desktop:~$ arp -a
+parallels@ubuntu-linux-20-04-desktop:~$ 
+
