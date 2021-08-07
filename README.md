@@ -1,131 +1,151 @@
 # devops-netology
 devops-10 student
 
-HW-3.7. Компьютерные сети, лекция 2
+HW-3.8. Компьютерные сети, лекция 3
 
 **************
 Использовал виртуализацию parallels c ВМ ubuntu 20.04 для arm64
 **************
 
 п.1
-parallels@ubuntu-linux-20-04-desktop:~$ ip link show
+pparallels@ubuntu-linux-20-04-desktop:~$ telnet route-views.routeviews.org
+Trying 128.223.51.103...
+Connected to route-views.routeviews.org.
+Escape character is '^]'.
+C
+**********************************************************************
 
+                    RouteViews BGP Route Viewer
+                    route-views.routeviews.org
+
+ route views data is archived on http://archive.routeviews.org
+
+ This hardware is part of a grant by the NSF.
+ Please contact help@routeviews.org if you have questions, or
+ if you wish to contribute your view.
+
+ This router has views of full routing tables from several ASes.
+ The list of peers is located at http://www.routeviews.org/peers
+ in route-views.oregon-ix.net.txt
+
+ NOTE: The hardware was upgraded in August 2014.  If you are seeing
+ the error message, "no default Kerberos realm", you may want to
+ in Mac OS X add "default unset autologin" to your ~/.telnetrc
+
+ To login, use the username "rviews".
+
+ **********************************************************************
+
+User Access Verification
+
+Username: rviews
+
+route-views>sh ip route 128.69.187.233
+
+Routing entry for 128.68.0.0/14, supernet
+  Known via "bgp 6447", distance 20, metric 0
+  Tag 3303, type external
+  Last update from 217.192.89.50 3w2d ago
+  Routing Descriptor Blocks:
+  * 217.192.89.50, from 217.192.89.50, 3w2d ago
+      Route metric is 0, traffic share count is 1
+      AS Hops 3
+      Route tag 3303
+      MPLS label: none
+      
+route-views>sh bgp 128.69.187.233
+
+BGP routing table entry for 128.68.0.0/14, version 181278844
+Paths: (25 available, best #11, table default)
+  Not advertised to any peer
+  Refresh Epoch 1
+  20912 3257 3356 3216 3216 3216 8402
+    212.66.96.126 from 212.66.96.126 (212.66.96.126)
+      Origin IGP, localpref 100, valid, external
+      Community: 3257:8070 3257:30515 3257:50001 3257:53900 3257:53902 20912:65004
+      path 7FE1253652C8 RPKI State not found
+      rx pathid: 0, tx pathid: 0
+  Refresh Epoch 1
+  3267 2603 3216 8402
+    194.85.40.15 from 194.85.40.15 (185.141.126.1)
+      Origin IGP, metric 0, localpref 100, valid, external
+      path 7FE18C983988 RPKI State not found
+      rx pathid: 0, tx pathid: 0
+  Refresh Epoch 1
+  3333 12859 3216 8402
+    193.0.0.56 from 193.0.0.56 (193.0.0.56)
+      Origin IGP, localpref 100, valid, external
+      Community: 3216:1000 3216:1004 3216:2001 8402:900 8402:904 8402:905 12859:1000 12859:1100
+      path 7FE13E26DAC0 RPKI State not found
+      rx pathid: 0, tx pathid: 0
+  Refresh Epoch 1
+  3561 3910 3356 3216 3216 3216 8402
+    206.24.210.80 from 206.24.210.80 (206.24.210.80)
+      Origin IGP, localpref 100, valid, external
+      path 7FE118F9F5E8 RPKI State not found
+      rx pathid: 0, tx pathid: 0
+  Refresh Epoch 1
+  7018 3356 3216 3216 3216 8402
+    12.0.1.63 from 12.0.1.63 (12.0.1.63)
+      Origin IGP, localpref 100, valid, external
+      Community: 7018:5000 7018:37232
+      path 7FE0D7827888 RPKI State not found
+      rx pathid: 0, tx pathid: 0
+  Refresh Epoch 1
+  6939 3216 8402
+    64.71.137.241 from 64.71.137.241 (216.218.252.164)
+      Origin IGP, localpref 100, valid, external
+      path 7FE1071D8358 RPKI State not found
+      rx pathid: 0, tx pathid: 0
+  Refresh Epoch 1
+  3549 3356 3216 3216 3216 8402
+    208.51.134.254 from 208.51.134.254 (67.16.168.191)
+      Origin IGP, metric 0, localpref 100, valid, external
+      Community: 3216:1000 3216:1004 3216:2001 3356:2 3356:22 3356:100 3356:123 3356:503 3356:903 3356:2067 3549:2581 3549:30840 8402:900 8402:904 8402:905
+      path 7FE148788AC8 RPKI State not found
+      rx pathid: 0, tx pathid: 0
+  Refresh Epoch 1
+  3356 3216 3216 3216 8402
+    4.68.4.46 from 4.68.4.46 (4.69.184.201)
+      Origin IGP, metric 0, localpref 100, valid, external
+      Community: 3216:1000 3216:1004 3216:2001 3356:2 3356:22 3356:100 3356:123 3356:503 3356:903 3356:2067 8402:900 8402:904 8402:905
+      path 7FE0C7080D98 RPKI State not found
+      rx pathid: 0, tx pathid: 0
+  Refresh Epoch 1
+  701 3356 3216 3216 3216 8402
+    137.39.3.55 from 137.39.3.55 (137.39.3.55)
+      Origin IGP, localpref 100, valid, external
+      path 7FE15B3A16C8 RPKI State not found
+      rx pathid: 0, tx pathid: 0
+  Refresh Epoch 1
+  53767 14315 6453 6453 3356 3216 3216 3216 8402
+    162.251.163.2 from 162.251.163.2 (162.251.162.3)
+      Origin IGP, localpref 100, valid, external
+      Community: 14315:5000 53767:5000
+      path 7FE17191CC08 RPKI State not found
+      rx pathid: 0, tx pathid: 0
+  Refresh Epoch 2
+  3303 3216 8402
+  
+parallels@ubuntu-linux-20-04-desktop:~$ sudo ip route add 172.16.10.0/24 dev dummy0
+
+arallels@ubuntu-linux-20-04-desktop:~$ ip route show
+
+default via 10.211.55.1 dev eth0 proto dhcp src 10.211.55.5 metric 100 
+10.211.55.0/24 dev eth0 proto kernel scope link src 10.211.55.5 
+10.211.55.1 dev eth0 proto dhcp scope link src 10.211.55.5 metric 100 
+172.16.10.0/24 dev dummy0 scope link 
+
+
+п.2
+parallels@ubuntu-linux-20-04-desktop:/etc/network$ sudo ip link add name dummy0 type dummy
+parallels@ubuntu-linux-20-04-desktop:/etc/network$ sudo ip link set dummy0 up
+
+parallels@ubuntu-linux-20-04-desktop:/etc/network$ ip link show
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
 2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
     link/ether 00:1c:42:bb:c7:a6 brd ff:ff:ff:ff:ff:ff
-    
-parallels@ubuntu-linux-20-04-desktop:~$ nmcli device status
-
-DEVICE  TYPE      STATE      CONNECTION 
-eth0    ethernet  unmanaged  --         
-lo      loopback  unmanaged  -- 
-
-parallels@ubuntu-linux-20-04-desktop:~$ netstat -i
-
-Kernel Interface table
-Iface      MTU    RX-OK RX-ERR RX-DRP RX-OVR    TX-OK TX-ERR TX-DRP TX-OVR Flg
-eth0      1500     1479      0      0 0          1456      0      0      0 BMRU
-lo       65536      437      0      0 0           437      0      0      0 LRU
-
-п.2
-Neighbor Discovery Protocol (NDP) — протокол из набора протоколов TCP/IP, используемый совместно с IPv6. Заменяет применяемые в IPv4 протоколы ARP, ICMP. Вместо использующихся в протоколе ARP широковещательных пакетов канального уровня используются групповые сообщения (multicast) не на канальном, а на сетевом уровне, что должно значительно снизить широковещательный трафик. Усовершенствованы функции протокола ICMP, облегчая работу разных подсетей в одном физическом сегменте. Включен механизм распознавания неисправных маршрутизаторов, что позволяет повысить устойчивость к сбоям оборудования. В дополнение к имевшимся ранее двум типам адресации — Unicast и Multicast (доставке уникальному получателю или группе получателей) — добавлен третий — Anycast, при котором осуществляется доставка любому получателю из группы.
-
-Пакет называется libndp-tools
-Команды npdtool, ndpmon
-
-п.3
-Для разделения L2 коммутатора на несколько виртуальных сетей используется технология VLAN.
-Данная технология описана стандартом 802.1Q и предусматривает добавление к заголовкам ethernet-кадра дополнительного поля, которое содержит в том числе определенную метку (тег) с номером виртуальной сети - VLAN ID, всего можно создать 4094 сети.
-
-Используется пакет iproute2
-Используются команды vconfig, ip
-
-Пример конфига:
-$ sudo vim /etc/network/interfaces
-
-##vlan с ID-100 для интерфейса eth0 with ID - 100 в Debian/Ubuntu Linux##
-##«поднимать» интерфейс при запуске сетевой службы
-auto eth0.100
-##название интерфейса
-iface eth0.100 inet static
-address 192.168.1.200
-netmask 255.255.255.0
-##указывает на каком физическом интерфейсе создавать VLAN
-vlan-raw-device eth0
-
-Для того, чтобы применить изменения, необходимо перезапустить сетевую службу
-$ sudo systemctl restart networking.service
-
-п.4
-Объединение сетевых интерфейсов(Bonding) – это механизм, используемый Linux-серверами и предполагающий связь нескольких физических интерфейсов в один виртуальный, что позволяет обеспечить большую пропускную способность или отказоустойчивость в случае повреждения кабеля. 
-Доступные режимы работы:
-mode=0 (balance-rr)
-При этом методе объединения трафик распределяется по принципу «карусели»: пакеты по очереди направляются на сетевые карты объединённого интерфейса. Например, если у нас есть физические интерфейсы eth0, eth1, eth2, объединенные в bond0, первый пакет будет отправляться через eth0, второй — через eth1, третий — через eth2, а четвертый снова через eth0 и т.д.
-
-mode=1 (active-backup)
-Когда используется этот метод, активен только один физический интерфейс, а остальные работают как резервные на случай отказа основного.
-
-mode=2 (balance-xor)
-В данном случае объединенный интерфейс определяет, через какую физическую сетевую карту отправить пакеты, в зависимости от MAC-адресов источника и получателя.
-
-mode=3 (broadcast) Широковещательный режим, все пакеты отправляются через каждый интерфейс. Имеет ограниченное применение, но обеспечивает значительную отказоустойчивость.
-
-mode=4 (802.3ad)
-Особый режим объединения. Для него требуется специально настраивать коммутатор, к которому подключен объединенный интерфейс. Реализует стандарты объединения каналов IEEE и обеспечивает как увеличение пропускной способности, так и отказоустойчивость.
-
-mode=5 (balance-tlb)
-Распределение нагрузки при передаче. Входящий трафик обрабатывается в обычном режиме, а при передаче интерфейс определяется на основе данных о загруженности.
-
-mode=6 (balance-alb)
-Адаптивное распределение нагрузки. Аналогично предыдущему режиму, но с возможностью балансировать также входящую нагрузку.
-
-Пример конфига:
-$ sudo vim /etc/network/interfaces
-
-# The primary network interface
-auto bond0
-iface bond0 inet static
-    address 192.168.1.150
-    netmask 255.255.255.0    
-    gateway 192.168.1.1
-    dns-nameservers 192.168.1.1 8.8.8.8
-    dns-search domain.local
-        slaves eth0 eth1
-        bond_mode 0
-        bond-miimon 100
-        bond_downdelay 200
-        bound_updelay 200
-        
-Для того, чтобы применить изменения, необходимо перезапустить сетевую службу
-$ sudo systemctl restart networking.service
-
-п.5
-Маска /29 может содержать до 6 Ip-адресов.
-В подсети /24 может разместиться 32 подсети с маской /29, при этом всего можно разместить суммарно 192 хоста.
-Пример:
-10.10.10.0/29
-10.10.10.8/29
-10.10.10.16/29
-
-п.6
-100.64.0.0/26
-100.64.0.64/26
-
-п.7
-Для Windows:
-arp -a
-
-Для Linux:
-parallels@ubuntu-linux-20-04-desktop:~$ arp -a
-
-Очистить arp таблицу:
-parallels@ubuntu-linux-20-04-desktop:~$ arp -d -a
-
-удалить 1 адрес из arp таблицы:
-parallels@ubuntu-linux-20-04-desktop:~$ arp -a
-prl-local-ns-server.shared (10.211.55.1) at 00:1c:42:00:00:18 [ether] on eth0
-parallels@ubuntu-linux-20-04-desktop:~$ sudo arp -d 10.211.55.1
-parallels@ubuntu-linux-20-04-desktop:~$ arp -a
-parallels@ubuntu-linux-20-04-desktop:~$ 
+3: dummy0: <BROADCAST,NOARP,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/ether 96:84:b2:c2:2b:7f brd ff:ff:ff:ff:ff:ff
 
