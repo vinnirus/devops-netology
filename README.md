@@ -194,4 +194,4 @@ systemd-network:
 служба, управляющая сетевыми настройками
 
 п.5
-
+http://joxi.ru/Vm6E9jkFRKVEGr
