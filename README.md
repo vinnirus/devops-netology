@@ -149,3 +149,49 @@ parallels@ubuntu-linux-20-04-desktop:/etc/network$ ip link show
 3: dummy0: <BROADCAST,NOARP,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
     link/ether 96:84:b2:c2:2b:7f brd ff:ff:ff:ff:ff:ff
 
+parallels@ubuntu-linux-20-04-desktop:~$ sudo ip route add 172.16.10.0/24 dev dummy0
+
+parallels@ubuntu-linux-20-04-desktop:~$ ip route show
+
+default via 10.211.55.1 dev eth0 proto dhcp src 10.211.55.5 metric 100 
+10.211.55.0/24 dev eth0 proto kernel scope link src 10.211.55.5 
+10.211.55.1 dev eth0 proto dhcp scope link src 10.211.55.5 metric 100 
+172.16.10.0/24 dev dummy0 scope link 
+
+п.3
+parallels@ubuntu-linux-20-04-desktop:~$ sudo netstat -tpln
+
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN      486/systemd-resolve 
+tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN      18661/cupsd         
+tcp6       0      0 ::1:631                 :::*                    LISTEN      18661/cupsd 
+
+systemd-resolve: 
+служба systemd, выполняющая разрешение сетевых имён для локальных приложений 
+
+cupsd: 
+служба общей системы печати, которая управляет заданиями печати и обеспечивает сетевую печать
+
+п.4
+parallels@ubuntu-linux-20-04-desktop:~$ sudo netstat -upln
+ 
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name    
+udp        0      0 0.0.0.0:5353            0.0.0.0:*                           531/avahi-daemon: r 
+udp        0      0 0.0.0.0:631             0.0.0.0:*                           18662/cups-browsed  
+udp        0      0 0.0.0.0:59205           0.0.0.0:*                           531/avahi-daemon: r 
+udp        0      0 127.0.0.53:53           0.0.0.0:*                           486/systemd-resolve 
+udp        0      0 10.211.55.5:68          0.0.0.0:*                           291/systemd-network 
+udp6       0      0 :::5353                 :::*                                531/avahi-daemon: r 
+udp6       0      0 fe80::21c:42ff:febb:546 :::*                                291/systemd-network 
+udp6       0      0 :::45989                :::*                                531/avahi-daemon: r
+
+avahi-daemon:
+служба, обеспечивающая обнаружение сервисов в локальной сети
+
+systemd-network:
+служба, управляющая сетевыми настройками
+
+п.5
+
