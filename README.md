@@ -127,8 +127,8 @@
 >    Refresh Epoch 2
 >    3303 3216 8402
 >
-  parallels@ubuntu-linux-20-04-desktop:~$ sudo ip route add 172.16.10.0/24 dev dummy0
-  parallels@ubuntu-linux-20-04-desktop:~$ ip route show
+  parallels@ubuntu-linux-20-04-desktop:\~\$ sudo ip route add 172.16.10.0/24 dev dummy0
+  parallels@ubuntu-linux-20-04-desktop:\~\$ ip route show
 >
 >default via 10.211.55.1 dev eth0 proto dhcp src 10.211.55.5 metric 100 
 >10.211.55.0/24 dev eth0 proto kernel scope link src 10.211.55.5 
