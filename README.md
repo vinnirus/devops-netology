@@ -11,7 +11,7 @@
   parallels@ubuntu-linux-20-04-desktop:~$ telnet route-views.routeviews.org
 >  Trying 128.223.51.103...
 >  Connected to route-views.routeviews.org.
->  Escape character is '>]'.
+>  Escape character is '^]'.
 >  C
 >  **********************************************************************
 >
@@ -138,14 +138,15 @@
 
 2.
   parallels@ubuntu-linux-20-04-desktop:/etc/network$ sudo ip link add name dummy0 type dummy
+  
   parallels@ubuntu-linux-20-04-desktop:/etc/network$ sudo ip link set dummy0 up
 
   parallels@ubuntu-linux-20-04-desktop:/etc/network$ ip link show
-  1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+>  1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
       link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-  2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+>  2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
       link/ether 00:1c:42:bb:c7:a6 brd ff:ff:ff:ff:ff:ff
-  3: dummy0: <BROADCAST,NOARP,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+>  3: dummy0: <BROADCAST,NOARP,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
       link/ether 96:84:b2:c2:2b:7f brd ff:ff:ff:ff:ff:ff
 
   parallels@ubuntu-linux-20-04-desktop:~$ sudo ip route add 172.16.10.0/24 dev dummy0
