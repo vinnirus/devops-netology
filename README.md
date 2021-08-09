@@ -1,7 +1,7 @@
 # devops-netology
-##cdevops-10 student
+## devops-10 student
 
-##cHW-3.8. Компьютерные сети, лекция 3
+## HW-3.8. Компьютерные сети, лекция 3
 
 **************
 Использовал виртуализацию parallels c ВМ ubuntu 20.04 для arm64
