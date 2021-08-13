@@ -100,5 +100,5 @@ Connection to 87.250.250.242 80 port [tcp/http] succeeded!
 nc: connect to 192.168.1.0 port 80 (tcp) failed: Connection refused
 
 parallels@ubuntu-linux-20-04-desktop:~$ cat error
- 
-Fri 13 Aug 2021 01:36:25 PM MSK 192.168.1.0
+
+Fri 13 Aug 2021 01:41:09 PM MSK has problem in 192.168.1.0
