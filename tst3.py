@@ -19,11 +19,12 @@ def is_git_repo(git_path):
 
 
 def list_changing_files(path_to_git):
+    result_changing_files = []
     if is_git_repo(path_to_git):
         git_statuses = ['modified', 'new file', 'deleted']
         bash_command = ["cd " + path_to_git, "git status"]
         result_os = run_bash_commands(bash_command)
-        result_changing_files = []
+
         for result in result_os.split('\n'):
             for status in git_statuses:
                 if result.find(status) != -1:
