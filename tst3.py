@@ -27,8 +27,9 @@ def list_changing_files(path_to_git):
         for result in result_os.split('\n'):
             for status in git_statuses:
                 if result.find(status) != -1:
-                prepare_result = result.replace('\t' + status + ':   ', '')
-                result_changing_files.append(prepare_result)
+                    prepare_result: str = result.replace('\t' + status + ':   ', '')
+                    result_changing_files.append(prepare_result)
+
     for each in result_changing_files:
         print(each)
     return result_changing_files
