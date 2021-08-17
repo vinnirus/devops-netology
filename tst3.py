@@ -36,7 +36,7 @@ def list_changing_files(path_to_git):
 
 
 if __name__ == "__main__":
-    if len (sys.argv) == 1:
+    if len(sys.argv) == 1:
         list_changing_files(sys.argv[1])
     else:
-        print ("Enter correct path to git directory")
+        print("Enter correct path to git directory")
