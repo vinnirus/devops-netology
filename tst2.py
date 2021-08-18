@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+#test my program
 import os
 path_to_git = '/Users/nikitavinogradov/Documents/education/netology/devops-netology'
 bash_command = ["cd " + path_to_git, "git status"]

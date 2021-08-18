@@ -13,8 +13,10 @@ def is_git_repo(git_path):
     result_os = run_bash_commands(bash_commands)
     for result in result_os:
         if result.find('fatal: not a git repository') != -1:
+            print('it isn\'t a git repo')
             return False
         else:
+            print('it is a git repo')
             return True
 
 
@@ -40,4 +42,4 @@ if __name__ == "__main__":
     if len(sys.argv) == 1:
         list_changing_files(sys.argv[1])
     else:
-        list_changing_files('./')
+        print('invalid input parameter')
