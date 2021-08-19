@@ -7,7 +7,7 @@
 
 1.
 
-```
+```bash
 c=a+b
 d=1+2
 e=3
@@ -19,7 +19,7 @@ e=3
 В примере допущена синтаксическая ошибка в виде отсутствующей закрывающей скобки.
 Кроме того, оператор `((` является аналогом оператора `let` и используется в арифметических операциях, для корректной работы скрипта следует использовать квадратные скобки `[[` или оператор `test`:
 
-```
+```bash
 while [ 1==1 ]
 do
     curl -s -k https://localhost:443
@@ -34,7 +34,7 @@ done
 
 3.
 
-```
+```bash
 parallels@ubuntu-linux-20-04-desktop:~$ vim check_health.sh 
 
 #!/bin/bash
@@ -88,7 +88,7 @@ Connection to 87.250.250.242 80 port [tcp/http] succeeded!
 ```
 4.
 
-```
+```bash
 parallels@ubuntu-linux-20-04-desktop:~$ vim ./check_status_repeat.sh
 #!/bin/bash
 while :
