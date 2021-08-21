@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#test my program
+
 import os
 path_to_git = '/Users/nikitavinogradov/Documents/education/netology/devops-netology'
 bash_command = ["cd " + path_to_git, "git status"]
@@ -13,6 +13,7 @@ for result in result_os.split('\n'):
             prepare_result = result.replace('\t' + status + ':   ', '')
             result_changing_files.append(prepare_result)
             is_change += 1
-print(os.getcwd())
+print(f'Current git directory is {path_to_git}')
 for each in result_changing_files:
     print(each)
+

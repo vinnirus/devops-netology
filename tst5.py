@@ -3,9 +3,15 @@
 import os
 import sys
 import socket
+import json
+import yaml
+
 
 path_cfg_file = './app.cfg'
 path_prev_check_file = './previous_check'
+json_file = './result.json'
+yml_file = './result.yml'
+
 check_dict = {}
 check_list = []
 prev_check_dict = {}
@@ -44,3 +50,9 @@ else:
     with open(path_prev_check_file, 'w') as prev_file:
         for dns_name in check_dict:
             prev_file.write(f'{dns_name}:{check_dict.get(dns_name)}\n')
+
+with open(json_file, 'w') as f_json:
+    f_json.write(json.dumps(check_dict))
+
+with open(yml_file, 'w') as f_yml:
+    f_yml.write(yaml.dump(check_dict))
