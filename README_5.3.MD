@@ -39,17 +39,21 @@ parallels@ubuntu-linux-20-04-desktop:~$ docker run -d --name my_centos -v "$(pwd
 parallels@ubuntu-linux-20-04-desktop:~$ docker run -d --name my_debian -v "$(pwd)"/info:/info debian:latest
 ```
 * Подключитесь к первому контейнеру с помощью exec и создайте текстовый файл любого содержания в /share/info ;<br>
-`parallels@ubuntu-linux-20-04-desktop:~$ docker exec -it my_centos /bin/bash`
-`[root@e2c241ffda92 /]# echo "first line from centos" > /share/info/data_file.txt`
-`[root@e2c241ffda92 /]# cat /share/info/data_file.txt`
-`first line from centos`
+```
+parallels@ubuntu-linux-20-04-desktop:~$ docker exec -it my_centos /bin/bash
+[root@e2c241ffda92 /]# echo "first line from centos" > /share/info/data_file.txt
+[root@e2c241ffda92 /]# cat /share/info/data_file.txt
+first line from centos
+```
 * Добавьте еще один файл в папку info на хостовой машине;<br>
 `parallels@ubuntu-linux-20-04-desktop:~$ echo 'first line from host machine' > ~/info/host_file.txt`
 * Подключитесь во второй контейнер и отобразите листинг и содержание файлов в /info контейнера.
-`parallels@ubuntu-linux-20-04-desktop:~$ docker exec -it my_debian /bin/bash`
-`root@1cd5202e23ed:/# ls /info`
-`data_file.txt  host_file.txt`
-`root@1cd5202e23ed:/# cat /info/data_file.txt`
-`first line from centos`
-`root@1cd5202e23ed:/# cat /info/host_file.txt`
-`first line from host machine`
+```
+parallels@ubuntu-linux-20-04-desktop:~$ docker exec -it my_debian /bin/bash
+root@1cd5202e23ed:/# ls /inf`
+data_file.txt  host_file.txt
+root@1cd5202e23ed:/# cat /info/data_file.txt
+first line from centos
+root@1cd5202e23ed:/# cat /info/host_file.txt
+first line from host machine
+```
