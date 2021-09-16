@@ -46,11 +46,13 @@ parallels@ubuntu-linux-20-04-desktop:~$ docker exec -it my_centos /bin/bash
 first line from centos
 ```
 * Добавьте еще один файл в папку info на хостовой машине;<br>
-`parallels@ubuntu-linux-20-04-desktop:~$ echo 'first line from host machine' > ~/info/host_file.txt`
+```
+parallels@ubuntu-linux-20-04-desktop:~$ echo 'first line from host machine' > ~/info/host_file.txt
+```
 * Подключитесь во второй контейнер и отобразите листинг и содержание файлов в /info контейнера.
 ```
 parallels@ubuntu-linux-20-04-desktop:~$ docker exec -it my_debian /bin/bash
-root@1cd5202e23ed:/# ls /inf`
+root@1cd5202e23ed:/# ls /info
 data_file.txt  host_file.txt
 root@1cd5202e23ed:/# cat /info/data_file.txt
 first line from centos
