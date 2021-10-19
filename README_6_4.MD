@@ -7,8 +7,7 @@
 1.<br>
 
 ```
-parallels@ubuntu-linux-20-04-desktop:~$ docker run -d --name=pg_13 -p 4432:5432 \
-				-e POSTGRES_PASSWORD=secret \																	-e PGDATA=/pgdata -v /pgdata13:/pgdata \															-v /pgbkp13:/pgbkp \																		postgres:13
+parallels@ubuntu-linux-20-04-desktop:~$ docker run -d --name=pg_13 -p 4432:5432 -e POSTGRES_PASSWORD=secret -e PGDATA=/pgdata -v /pgdata13:/pgdata -v /pgbkp13:/pgbkp postgres:13
 91ffd76e6e8f53091c88233a65b43088f326f4011e8e8be0173a3d42741d1e41
 parallels@ubuntu-linux-20-04-desktop:~$ docker ps
 CONTAINER ID   IMAGE         COMMAND                  CREATED         STATUS         PORTS                                       NAMES
