@@ -1,13 +1,14 @@
-# devops-netology
-devops-10 student
+### devops-10 student
 
-HW-3.8. Компьютерные сети, лекция 3
+### HW-3.8. Компьютерные сети, лекция 3
 
-**************
-Использовал виртуализацию parallels c ВМ ubuntu 20.04 для arm64
-**************
+---
+#### Использовал виртуализацию parallels c ВМ ubuntu 20.04 для arm64
+---
 
-п.1
+1.
+
+```
 pparallels@ubuntu-linux-20-04-desktop:~$ telnet route-views.routeviews.org
 Trying 128.223.51.103...
 Connected to route-views.routeviews.org.
@@ -135,9 +136,11 @@ default via 10.211.55.1 dev eth0 proto dhcp src 10.211.55.5 metric 100
 10.211.55.0/24 dev eth0 proto kernel scope link src 10.211.55.5 
 10.211.55.1 dev eth0 proto dhcp scope link src 10.211.55.5 metric 100 
 172.16.10.0/24 dev dummy0 scope link 
+```
 
+2.
 
-п.2
+```
 parallels@ubuntu-linux-20-04-desktop:/etc/network$ sudo ip link add name dummy0 type dummy
 parallels@ubuntu-linux-20-04-desktop:/etc/network$ sudo ip link set dummy0 up
 
@@ -157,8 +160,11 @@ default via 10.211.55.1 dev eth0 proto dhcp src 10.211.55.5 metric 100
 10.211.55.0/24 dev eth0 proto kernel scope link src 10.211.55.5 
 10.211.55.1 dev eth0 proto dhcp scope link src 10.211.55.5 metric 100 
 172.16.10.0/24 dev dummy0 scope link 
+```
 
-п.3
+3.
+
+```
 parallels@ubuntu-linux-20-04-desktop:~$ sudo netstat -tpln
 
 Active Internet connections (only servers)
@@ -167,13 +173,17 @@ tcp        0      0 127.0.0.53:53           0.0.0.0:*               LISTEN      
 tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN      18661/cupsd         
 tcp6       0      0 ::1:631                 :::*                    LISTEN      18661/cupsd 
 
-systemd-resolve: 
+```
+
+***systemd-resolve***: 
 служба systemd, выполняющая разрешение сетевых имён для локальных приложений 
 
-cupsd: 
+***cupsd***: 
 служба общей системы печати, которая управляет заданиями печати и обеспечивает сетевую печать
 
-п.4
+4.
+
+```
 parallels@ubuntu-linux-20-04-desktop:~$ sudo netstat -upln
  
 Active Internet connections (only servers)
@@ -186,12 +196,13 @@ udp        0      0 10.211.55.5:68          0.0.0.0:*                           
 udp6       0      0 :::5353                 :::*                                531/avahi-daemon: r 
 udp6       0      0 fe80::21c:42ff:febb:546 :::*                                291/systemd-network 
 udp6       0      0 :::45989                :::*                                531/avahi-daemon: r
-
-avahi-daemon:
+```
+***avahi-daemon***:
 служба, обеспечивающая обнаружение сервисов в локальной сети
 
-systemd-network:
+***systemd-network***:
 служба, управляющая сетевыми настройками
 
-п.5
-http://joxi.ru/Vm6E9jkFRKVEGr
+5.
+
+[Ссылка](http://joxi.ru/Vm6E9jkFRKVEGr)
