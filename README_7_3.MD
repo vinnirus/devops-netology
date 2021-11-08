@@ -608,3 +608,5 @@ Plan: 6 to add, 0 to change, 0 to destroy.
 
 Note: You didn't use the -out option to save this plan, so Terraform can't guarantee to take exactly these actions if you run "terraform apply" now.
 ```
+
+[git: terraform_netology](https://github.com/vinnirus/terraform_netology)
